@@ -1,30 +1,35 @@
 package blog.model;
 
-import java.util.Date;
-
 /**
  * Administrators is a simple, plain old java objects (POJO).
  * Well, almost (it extends {@link Persons}).
  */
 public class Administrators extends Persons {
-	protected Date lastLogin;
+	protected boolean canEditPosts;
+	protected boolean canDeletePosts;
 	
-	public Administrators(String userName, String firstName, String lastName, Date lastLogin) {
-		super(userName, firstName, lastName);
-		this.lastLogin = lastLogin;
-	}
-	
-	public Administrators(String userName) {
-		super(userName);
-	}
-
-	/** Getters and setters. */
-	
-	public Date getLastLogin() {
-		return lastLogin;
+	public Administrators(String userName, String password, String firstName, String lastName, String email,
+			String phoneNumber, boolean canEditPosts, boolean canDeletePosts) {
+		super(userName, password, firstName, lastName, email, phoneNumber);
+		this.canEditPosts = canEditPosts;
+		this.canDeletePosts = canDeletePosts;
 	}
 
-	public void setLastLogin(Date lastLogin) {
-		this.lastLogin = lastLogin;
-	}	
+	public boolean isCanEditPosts() {
+		return canEditPosts;
+	}
+
+	public void setCanEditPosts(boolean canEditPosts) {
+		this.canEditPosts = canEditPosts;
+	}
+
+	public boolean isCanDeletePosts() {
+		return canDeletePosts;
+	}
+
+	public void setCanDeletePosts(boolean canDeletePosts) {
+		this.canDeletePosts = canDeletePosts;
+	}
+	
+	
 }

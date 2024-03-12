@@ -2,27 +2,23 @@ package blog.model;
 
 /**
  * Persons is a simple, plain old java objects (POJO).
- * 
- * Persons/PersonsDao is the superclass for Administrators/AdministratorsDao and
- * BlogUsers/BlogUsersDao. Our implementation of Persons is a concrete class. This allows 
- * us to create records in the Persons MySQL table without having the associated records
- * in the Administrators or BlogUsers MySQL tables. Alternatively, Persons could be an
- * interface or an abstract class, which would force a Persons record to be created only
- * if an Administrators or BlogUsers record is created, too.
  */
 public class Persons {
 	protected String userName;
+	protected String password;
 	protected String firstName;
 	protected String lastName;
+	protected String email;
+	protected String phoneNumber;
 	
-	public Persons(String userName, String firstName, String lastName) {
+	public Persons(String userName, String password, String firstName, String lastName, String email,
+			String phoneNumber) {
 		this.userName = userName;
+		this.password = password;
 		this.firstName = firstName;
 		this.lastName = lastName;
-	}
-	
-	public Persons(String userName) {
-		this.userName = userName;
+		this.email = email;
+		this.phoneNumber = phoneNumber;
 	}
 
 	public String getUserName() {
@@ -31,6 +27,14 @@ public class Persons {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getFirstName() {
@@ -47,5 +51,21 @@ public class Persons {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 }
