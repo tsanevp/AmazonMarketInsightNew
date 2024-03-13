@@ -6,11 +6,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 
 /**
  * Data access object (DAO) class to interact with the underlying Administrators table in your
@@ -18,11 +13,12 @@ import java.util.List;
  * retrieve {@link Administrators} from MySQL instance.
  */
 public class AdministratorsDao extends PersonsDao {
-	// Single pattern: instantiation is limited to one object.
 	private static AdministratorsDao instance = null;
+	
 	protected AdministratorsDao() {
 		super();
 	}
+	
 	public static AdministratorsDao getInstance() {
 		if(instance == null) {
 			instance = new AdministratorsDao();
@@ -32,17 +28,18 @@ public class AdministratorsDao extends PersonsDao {
 	
 	public Administrators create(Administrators administrator) throws SQLException {
 		// Insert into the superclass table first.
-		create(new Persons(administrator.getUserName(), administrator.getFirstName(),
-			administrator.getLastName()));
+		create(new Persons(administrator.getUserName(), administrator.getPassword(), administrator.getFirstName(),
+			administrator.getLastName(), administrator.getEmail(), administrator.getPhoneNumber()));
 
-		String insertAdministrator = "INSERT INTO Administrators(UserName,LastLogin) VALUES(?,?);";
+		String insertAdministrator = "INSERT INTO Administrators(UserName,CanEditPosts,CanDeletePosts) VALUES(?,?,?);";
 		Connection connection = null;
 		PreparedStatement insertStmt = null;
 		try {
 			connection = connectionManager.getConnection();
 			insertStmt = connection.prepareStatement(insertAdministrator);
 			insertStmt.setString(1, administrator.getUserName());
-			insertStmt.setTimestamp(2, new Timestamp(administrator.getLastLogin().getTime()));
+			insertStmt.setBoolean(2, administrator.isCanEditPosts());
+			insertStmt.setBoolean(3, administrator.isCanDeletePosts());
 			insertStmt.executeUpdate();
 			return administrator;
 		} catch (SQLException e) {
@@ -58,54 +55,10 @@ public class AdministratorsDao extends PersonsDao {
 		}
 	}
 
-	/**
-	 * Update the LastName of the Administrators instance.
-	 * This runs a UPDATE statement.
-	 */
-	public Administrators updateLastName(Administrators administrator, String newLastName) throws SQLException {
-		// The field to update only exists in the superclass table, so we can
-		// just call the superclass method.
-		super.updateLastName(administrator, newLastName);
-		return administrator;
-	}
-
-	/**
-	 * Delete the Administrators instance.
-	 * This runs a DELETE statement.
-	 */
-	public Administrators delete(Administrators administrator) throws SQLException {
-		String deleteAdministrator = "DELETE FROM Administrators WHERE UserName=?;";
-		Connection connection = null;
-		PreparedStatement deleteStmt = null;
-		try {
-			connection = connectionManager.getConnection();
-			deleteStmt = connection.prepareStatement(deleteAdministrator);
-			deleteStmt.setString(1, administrator.getUserName());
-			deleteStmt.executeUpdate();
-
-			// Then also delete from the superclass.
-			// Note: due to the fk constraint (ON DELETE CASCADE), we could simply call
-			// super.delete() without even needing to delete from Administrators first.
-			super.delete(administrator);
-
-			return null;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw e;
-		} finally {
-			if(connection != null) {
-				connection.close();
-			}
-			if(deleteStmt != null) {
-				deleteStmt.close();
-			}
-		}
-	}
-	
 	public Administrators getAdministratorFromUserName(String userName) throws SQLException {
 		// To build an Administrator object, we need the Persons record, too.
 		String selectAdministrator =
-			"SELECT Administrators.UserName AS UserName, FirstName, LastName, LastLogin " +
+			"SELECT Administrators.UserName AS UserName, Password, FirstName, LastName, Email, PhoneNumber, CanEditPosts, CanDeletePosts" +
 			"FROM Administrators INNER JOIN Persons " +
 			"  ON Administrators.UserName = Persons.UserName " +
 			"WHERE Administrators.UserName=?;";
@@ -119,11 +72,15 @@ public class AdministratorsDao extends PersonsDao {
 			results = selectStmt.executeQuery();
 			if(results.next()) {
 				String resultUserName = results.getString("UserName");
+				String password = results.getString("Password");
 				String firstName = results.getString("FirstName");
 				String lastName = results.getString("LastName");
-				Date lastLogin = new Date(results.getTimestamp("LastLogin").getTime());
-				Administrators administrator = new Administrators(resultUserName, firstName, lastName, lastLogin);
-				return administrator;
+				String email = results.getString("Email");
+				String phoneNumber = results.getString("PhoneNumber");
+				boolean canEditPosts = results.getBoolean("CanEditPosts");
+				boolean canDeletePosts = results.getBoolean("CanDeletePosts");
+				
+				return new Administrators(resultUserName, password, firstName, lastName, email, phoneNumber, canEditPosts, canDeletePosts);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -141,31 +98,25 @@ public class AdministratorsDao extends PersonsDao {
 		}
 		return null;
 	}
-
-	public List<Administrators> getAdministratorsFromFirstName(String firstName)
-			throws SQLException {
-		List<Administrators> administrators = new ArrayList<Administrators>();
-		String selectAdministrators =
-			"SELECT Administrators.UserName AS UserName, FirstName, LastName, LastLogin " +
-			"FROM Administrators INNER JOIN Persons " +
-			"  ON Administrators.UserName = Persons.UserName " +
-			"WHERE Persons.FirstName=?;";
+	
+	/**
+	 * Update the LastName of the Administrators instance.
+	 * This runs a UPDATE statement.
+	 */
+	public Administrators updateEditPermissions(Administrators administrator, boolean newEditPermission) throws SQLException {
+		String updateAdministrator = "UPDATE Administrators SET CanEditPosts=? WHERE UserName=?;";
 		Connection connection = null;
-		PreparedStatement selectStmt = null;
-		ResultSet results = null;
+		PreparedStatement updateStmt = null;
 		try {
 			connection = connectionManager.getConnection();
-			selectStmt = connection.prepareStatement(selectAdministrators);
-			selectStmt.setString(1, firstName);
-			results = selectStmt.executeQuery();
-			while(results.next()) {
-				String userName = results.getString("UserName");
-				String resultFirstName = results.getString("FirstName");
-				String lastName = results.getString("LastName");
-				Date lastLogin = new Date(results.getTimestamp("LastLogin").getTime());
-				Administrators administrator = new Administrators(userName, resultFirstName, lastName, lastLogin);
-				administrators.add(administrator);
-			}
+			updateStmt = connection.prepareStatement(updateAdministrator);
+			updateStmt.setBoolean(1, newEditPermission);
+			updateStmt.setString(2, administrator.getUserName());
+			updateStmt.executeUpdate();
+			
+			// Update the person param before returning to the caller.
+			administrator.setCanEditPosts(newEditPermission);
+			return administrator;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw e;
@@ -173,13 +124,39 @@ public class AdministratorsDao extends PersonsDao {
 			if(connection != null) {
 				connection.close();
 			}
-			if(selectStmt != null) {
-				selectStmt.close();
-			}
-			if(results != null) {
-				results.close();
+			if(updateStmt != null) {
+				updateStmt.close();
 			}
 		}
-		return administrators;
+	}
+
+	/**
+	 * Delete the Administrators instance.
+	 * This runs a DELETE statement.
+	 */
+	public Administrators delete(Administrators administrator) throws SQLException {
+		String deleteAdministrator = "DELETE FROM Administrators WHERE UserName=?;";
+		Connection connection = null;
+		PreparedStatement deleteStmt = null;
+		try {
+			connection = connectionManager.getConnection();
+			deleteStmt = connection.prepareStatement(deleteAdministrator);
+			deleteStmt.setString(1, administrator.getUserName());
+			deleteStmt.executeUpdate();
+
+			super.delete(administrator);
+
+			return null;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if(connection != null) {
+				connection.close();
+			}
+			if(deleteStmt != null) {
+				deleteStmt.close();
+			}
+		}
 	}
 }
