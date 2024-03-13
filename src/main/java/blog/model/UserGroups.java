@@ -5,21 +5,13 @@ import java.util.Date;
 public class UserGroups {
 	protected int groupId;
 	protected String groupName;
-	protected Roles role;
-	protected Date joinDate;
-	protected String userName;
+	protected Date created;
 	protected int categoryId;
-
-	public enum Roles {
-		OWNER, ADMIN, MEMBER
-	};
 	
-	public UserGroups(int groupId, String groupName, Roles role, Date joinDate, String userName, int categoryId) {
+	public UserGroups(int groupId, String groupName, Date created, int categoryId) {
 		this.groupId = groupId;
 		this.groupName = groupName;
-		this.role = role;
-		this.joinDate = joinDate;
-		this.userName = userName;
+		this.created = created;
 		this.categoryId = categoryId;
 	}
 
@@ -39,28 +31,12 @@ public class UserGroups {
 		this.groupName = groupName;
 	}
 
-	public Roles getRole() {
-		return role;
+	public Date getCreated() {
+		return created;
 	}
 
-	public void setCuisine(Roles role) {
-		this.role = role;
-	}
-	
-	public Date getJoinDate() {
-		return joinDate;
-	}
-
-	public void setJoinDate(Date joinDate) {
-		this.joinDate = joinDate;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setCreated(Date created) {
+		this.created = created;
 	}
 
 	public int getCategoryId() {
@@ -69,5 +45,5 @@ public class UserGroups {
 
 	public void setCategoryId(int categoryId) {
 		this.categoryId = categoryId;
-	}	
+	}
 }
