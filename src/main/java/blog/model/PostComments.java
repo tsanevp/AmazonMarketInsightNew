@@ -9,10 +9,10 @@ public class PostComments {
 	protected int upVotes;
 	protected int downVotes;
 	protected String userName;
-	protected String postId;
+	protected int postId;
 	
 	public PostComments(int postCommentId, Date created, String comment, int upVotes, int downVotes, String userName,
-			String postId) {
+			int postId) {
 		this.postCommentId = postCommentId;
 		this.created = created;
 		this.comment = comment;
@@ -70,11 +70,11 @@ public class PostComments {
 		this.userName = userName;
 	}
 
-	public String getPostId() {
+	public int getPostId() {
 		return postId;
 	}
 
-	public void setPostId(String postId) {
+	public void setPostId(int postId) {
 		this.postId = postId;
 	}
 }

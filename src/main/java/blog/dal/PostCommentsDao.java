@@ -47,7 +47,7 @@ public class PostCommentsDao {
 			insertStmt.setInt(4, postComment.getUpVotes());
 			insertStmt.setInt(5, postComment.getDownVotes());
 			insertStmt.setString(6, postComment.getUserName());
-			insertStmt.setString(7, postComment.getPostId());
+			insertStmt.setInt(7, postComment.getPostId());
 
 			insertStmt.executeUpdate();
 			
@@ -87,7 +87,7 @@ public class PostCommentsDao {
 				int upVotes = results.getInt("UpVotes");
 				int downVotes = results.getInt("DownVotes");
 				String userName = results.getString("UserName");
-				String postId = results.getString("PostId");
+				int postId = results.getInt("PostId");
 				
 				return new PostComments(resultPostCommentId, created, comment, upVotes, downVotes, userName, postId);
 			}

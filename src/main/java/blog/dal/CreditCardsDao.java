@@ -44,7 +44,7 @@ public class CreditCardsDao {
 			connection = connectionManager.getConnection();
 			insertStmt = connection.prepareStatement(insertCreditCard);
 
-			insertStmt.setInt(1, creditCard.getCardNumber());
+			insertStmt.setLong(1, creditCard.getCardNumber());
 			insertStmt.setTimestamp(2, new Timestamp(creditCard.getExpiration().getTime()));
 			insertStmt.setString(3, creditCard.getUserName());
 			insertStmt.executeUpdate();
@@ -157,7 +157,7 @@ public class CreditCardsDao {
 			connection = connectionManager.getConnection();
 			updateStmt = connection.prepareStatement(updateCreditCard);
 			updateStmt.setTimestamp(1, new Timestamp(newExpiration.getTime()));
-			updateStmt.setInt(2, creditCard.getCardNumber());
+			updateStmt.setLong(2, creditCard.getCardNumber());
 			updateStmt.executeUpdate();
 			
 			// Update the creditCard param before returning to the caller.
@@ -187,7 +187,7 @@ public class CreditCardsDao {
 		try {
 			connection = connectionManager.getConnection();
 			deleteStmt = connection.prepareStatement(deleteCreditCard);
-			deleteStmt.setInt(1, creditCard.getCardNumber());
+			deleteStmt.setLong(1, creditCard.getCardNumber());
 			deleteStmt.executeUpdate();
 
 			// Return null so the caller can no longer operate on the CreditCards instance.
