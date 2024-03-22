@@ -35,7 +35,7 @@ public class GroupMembersDao {
 			insertStmt.setInt(1, groupMember.getGroupId());
 			insertStmt.setString(2, groupMember.getUserName());
 			insertStmt.setString(3, groupMember.getRole().name());
-			insertStmt.setTimestamp(3, new Timestamp(groupMember.getJoinDate().getTime()));
+			insertStmt.setTimestamp(4, new Timestamp(groupMember.getJoinDate().getTime()));
 
 			insertStmt.executeUpdate();
 			return groupMember;
@@ -69,7 +69,7 @@ public class GroupMembersDao {
 				String role = results.getString("Role");
 				Date joinDate = new Date(results.getTimestamp("JoinDate").getTime());
 				
-				return new GroupMembers(resultGroupId, resultUserName, GroupMembers.Roles.valueOf(role), joinDate);
+				return new GroupMembers(resultGroupId, resultUserName, GroupMembers.Roles.valueOf(role.toUpperCase()), joinDate);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -88,20 +88,20 @@ public class GroupMembersDao {
 		return null;
 	}
 	
-	public GroupMembers updateRole(GroupMembers groupMember, String newRole) throws SQLException {
+	public GroupMembers updateRole(GroupMembers groupMember, GroupMembers.Roles newRole) throws SQLException {
 		String updateGroupMember = "UPDATE GroupMembers SET Role=? WHERE GroupId=? AND UserName=?;";
 		Connection connection = null;
 		PreparedStatement updateStmt = null;
 		try {
 			connection = connectionManager.getConnection();
 			updateStmt = connection.prepareStatement(updateGroupMember);
-			updateStmt.setString(1, newRole);
+			updateStmt.setString(1, newRole.name());
 			updateStmt.setInt(2, groupMember.getGroupId());
 			updateStmt.setString(3, groupMember.getUserName());
 
 			updateStmt.executeUpdate();
 			
-			groupMember.setRole(GroupMembers.Roles.valueOf(newRole));
+			groupMember.setRole(newRole);
 			return groupMember;
 		} catch (SQLException e) {
 			e.printStackTrace();

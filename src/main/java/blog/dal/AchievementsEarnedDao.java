@@ -34,7 +34,7 @@ public class AchievementsEarnedDao {
 	 * This runs a INSERT statement.
 	 */
 	public AchievementsEarned create(AchievementsEarned achievementEarned) throws SQLException {
-		String insertAchievementEarned = "INSERT INTO AchievementsEarned(AchievementEarnedId,DateEarned,UserName,AchievementId) VALUES(?,?,?);";
+		String insertAchievementEarned = "INSERT INTO AchievementsEarned(AchievementEarnedId,DateEarned,UserName,AchievementId) VALUES(?,?,?,?);";
 		Connection connection = null;
 		PreparedStatement insertStmt = null;
 		try {
@@ -43,8 +43,8 @@ public class AchievementsEarnedDao {
 
 			insertStmt.setInt(1, achievementEarned.getAchievementEarnedId());
 			insertStmt.setTimestamp(2, new Timestamp(achievementEarned.getDateEarned().getTime()));
-			insertStmt.setString(2, achievementEarned.getUserName());
-			insertStmt.setInt(2, achievementEarned.getAchievementId());
+			insertStmt.setString(3, achievementEarned.getUserName());
+			insertStmt.setInt(4, achievementEarned.getAchievementId());
 
 			insertStmt.executeUpdate();
 			
@@ -66,7 +66,7 @@ public class AchievementsEarnedDao {
 	 * Get the AchievementsEarned record by fetching it from your MySQL instance.
 	 * This runs a SELECT statement and returns a single AchievementsEarned instance.
 	 */
-	public AchievementsEarned getAchievementFromId(int achievementEarnedId) throws SQLException {
+	public AchievementsEarned getAchievementEarnedFromId(int achievementEarnedId) throws SQLException {
 		String selectAchievementEarned = "SELECT AchievementEarnedId,DateEarned,UserName,AchievementId FROM AchievementsEarned WHERE AchievementEarnedId=?;";
 		Connection connection = null;
 		PreparedStatement selectStmt = null;

@@ -49,18 +49,19 @@ public class CategoriesDao {
 			}
 		}
 	}
-
-	public Categories update(Categories category) throws SQLException {
+	
+	public Categories updateName(Categories category, String newName) throws SQLException {
 		String updateCategory = "UPDATE Categories SET Name=? WHERE categoryId=?;";
 		Connection connection = null;
 		PreparedStatement updateStmt = null;
 		try {
 			connection = connectionManager.getConnection();
 			updateStmt = connection.prepareStatement(updateCategory);
-			updateStmt.setString(1, category.getName());
+			updateStmt.setString(1, newName);
 			updateStmt.setInt(2, category.getCategoryId());
 
 			updateStmt.executeUpdate();
+			category.setName(newName);
 			return category;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -75,14 +76,14 @@ public class CategoriesDao {
 		}
 	}
 
-	public boolean delete(String categoryId) throws SQLException {
+	public boolean delete(int categoryId) throws SQLException {
 		String deleteCategory = "DELETE FROM Categories WHERE categoryId=?;";
 		Connection connection = null;
 		PreparedStatement deleteStmt = null;
 		try {
 			connection = connectionManager.getConnection();
 			deleteStmt = connection.prepareStatement(deleteCategory);
-			deleteStmt.setString(1, categoryId);
+			deleteStmt.setInt(1, categoryId);
 
 			int affectedRows = deleteStmt.executeUpdate();
 			return affectedRows > 0;

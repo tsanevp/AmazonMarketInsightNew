@@ -58,9 +58,9 @@ public class AdministratorsDao extends PersonsDao {
 	public Administrators getAdministratorFromUserName(String userName) throws SQLException {
 		// To build an Administrator object, we need the Persons record, too.
 		String selectAdministrator =
-			"SELECT Administrators.UserName AS UserName, Password, FirstName, LastName, Email, PhoneNumber, CanEditPosts, CanDeletePosts" +
+			"SELECT Administrators.UserName AS UserName, Password, FirstName, LastName, Email, PhoneNumber, CanEditPosts, CanDeletePosts " +
 			"FROM Administrators INNER JOIN Persons " +
-			"  ON Administrators.UserName = Persons.UserName " +
+				"ON Administrators.UserName = Persons.UserName " +
 			"WHERE Administrators.UserName=?;";
 		Connection connection = null;
 		PreparedStatement selectStmt = null;
@@ -69,6 +69,7 @@ public class AdministratorsDao extends PersonsDao {
 			connection = connectionManager.getConnection();
 			selectStmt = connection.prepareStatement(selectAdministrator);
 			selectStmt.setString(1, userName);
+			
 			results = selectStmt.executeQuery();
 			if(results.next()) {
 				String resultUserName = results.getString("UserName");

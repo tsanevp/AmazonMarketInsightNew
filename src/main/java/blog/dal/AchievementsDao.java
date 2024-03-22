@@ -64,7 +64,7 @@ public class AchievementsDao {
 	 * Get the Achievements record by fetching it from your MySQL instance.
 	 * This runs a SELECT statement and returns a single Achievements instance.
 	 */
-	public Achievements getAchievementFromUserName(int achievementId) throws SQLException {
+	public Achievements getAchievementFromId(int achievementId) throws SQLException {
 		String selectAchievement = "SELECT AchievementId,Name,Created FROM Achievements WHERE AchievementId=?;";
 		Connection connection = null;
 		PreparedStatement selectStmt = null;

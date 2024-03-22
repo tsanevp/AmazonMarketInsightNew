@@ -26,7 +26,7 @@ public class UserGroupsDao {
 	}
 
 	public UserGroups create(UserGroups userGroup) throws SQLException {
-		String insertUserGroup = "INSERT INTO UserGroups(UserGroupId,GroupName,Created,CategoryId) VALUES(?,?,?,?);";
+		String insertUserGroup = "INSERT INTO UserGroups(GroupId,GroupName,Created,CategoryId) VALUES(?,?,?,?);";
 		Connection connection = null;
 		PreparedStatement insertStmt = null;
 		try {
@@ -53,7 +53,7 @@ public class UserGroupsDao {
 	}
 
 	public UserGroups getUserGroupById(int userGroupId) throws SQLException {
-		String selectUserGroup = "SELECT UserGroupId,GroupName,Created,CategoryId FROM UserGroups WHERE UserGroupId=?;";
+		String selectUserGroup = "SELECT GroupId,GroupName,Created,CategoryId FROM UserGroups WHERE GroupId=?;";
 		Connection connection = null;
 		PreparedStatement selectStmt = null;
 		ResultSet results = null;
@@ -63,7 +63,7 @@ public class UserGroupsDao {
 			selectStmt.setInt(1, userGroupId);
 			results = selectStmt.executeQuery();
 			if (results.next()) {
-				int resultUserGroupId = results.getInt("UserGroupId");
+				int resultUserGroupId = results.getInt("GroupId");
 				String groupName = results.getString("GroupName");
 				Date created = new Date(results.getTimestamp("Created").getTime());
 				int categoryId = results.getInt("CategoryId");
@@ -88,7 +88,7 @@ public class UserGroupsDao {
 	}
 	
 	public UserGroups updateName(UserGroups userGroup, String newName) throws SQLException {
-		String updateUserGroup = "UPDATE UserGroups SET GroupName=? WHERE UserGroupId=?;";
+		String updateUserGroup = "UPDATE UserGroups SET GroupName=? WHERE GroupId=?;";
 		Connection connection = null;
 		PreparedStatement updateStmt = null;
 		try {
@@ -114,14 +114,14 @@ public class UserGroupsDao {
 		}
 	}
 
-	public boolean delete(String userGroupId) throws SQLException {
-		String deleteUserGroup = "DELETE FROM UserGroups WHERE UserGroupId=?;";
+	public boolean delete(int groupId) throws SQLException {
+		String deleteUserGroup = "DELETE FROM UserGroups WHERE GroupId=?;";
 		Connection connection = null;
 		PreparedStatement deleteStmt = null;
 		try {
 			connection = connectionManager.getConnection();
 			deleteStmt = connection.prepareStatement(deleteUserGroup);
-			deleteStmt.setString(1, userGroupId);
+			deleteStmt.setInt(1, groupId);
 
 			int affectedRows = deleteStmt.executeUpdate();
 			return affectedRows > 0;

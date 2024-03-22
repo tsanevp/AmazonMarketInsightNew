@@ -67,7 +67,7 @@ public class CreditCardsDao {
 	 * Get the CreditCards record by fetching it from your MySQL instance.
 	 * This runs a SELECT statement and returns a single CreditCards instance.
 	 */
-	public CreditCards getCreditCardFromId(int cardNumber) throws SQLException {
+	public CreditCards getCreditCardFromId(long cardNumber) throws SQLException {
 		String selectCreditCard = "SELECT CardNumber,Expiration,UserName FROM CreditCards WHERE CardNumber=?;";
 		Connection connection = null;
 		PreparedStatement selectStmt = null;
@@ -75,11 +75,11 @@ public class CreditCardsDao {
 		try {
 			connection = connectionManager.getConnection();
 			selectStmt = connection.prepareStatement(selectCreditCard);
-			selectStmt.setInt(1, cardNumber);
+			selectStmt.setLong(1, cardNumber);
 
 			results = selectStmt.executeQuery();
 			if(results.next()) {
-				int resultCardNumber = results.getInt("AchievementId");
+				long resultCardNumber = results.getLong("CardNumber");
 				Date expiration = new Date(results.getTimestamp("Expiration").getTime());
 				String userName = results.getString("UserName");
 

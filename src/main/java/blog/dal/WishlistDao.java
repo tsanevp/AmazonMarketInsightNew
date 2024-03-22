@@ -74,7 +74,7 @@ public class WishlistDao {
 
 			results = selectStmt.executeQuery();
 			if(results.next()) {
-				int resultWishlistId = results.getInt("AchievementId");
+				int resultWishlistId = results.getInt("WishListId");
 				String userName = results.getString("UserName");
 				String productId = results.getString("ProductId");
 

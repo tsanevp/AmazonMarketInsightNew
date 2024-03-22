@@ -61,9 +61,9 @@ public class UsersDao extends PersonsDao {
 	public Users getUserFromUserName(String userName) throws SQLException {
 		// To build an BlogUser object, we need the Persons record, too.
 		String selectUser =
-			"SELECT Users.UserName AS UserName, Password, FirstName, LastName, Email, PhoneNumber, DoB, Subscribed" +
+			"SELECT Users.UserName AS UserName, Password, FirstName, LastName, Email, PhoneNumber, DoB, Subscribed " +
 			"FROM Users INNER JOIN Persons " +
-			"  ON Users.UserName = Persons.UserName " +
+				"ON Users.UserName = Persons.UserName " +
 			"WHERE Users.UserName=?;";
 		Connection connection = null;
 		PreparedStatement selectStmt = null;
@@ -101,12 +101,12 @@ public class UsersDao extends PersonsDao {
 		return null;
 	}
 
-	public Users getBlogUserFromSubscribed(boolean isSubscribed) throws SQLException {
+	public Users getUserFromSubscribed(boolean isSubscribed) throws SQLException {
 		// To build an BlogUser object, we need the Persons record, too.
 		String selectUser =
-			"SELECT Users.UserName AS UserName, Password, FirstName, LastName, Email, PhoneNumber, DoB, Subscribed" +
+			"SELECT Users.UserName AS UserName, Password, FirstName, LastName, Email, PhoneNumber, DoB, Subscribed " +
 			"FROM Users INNER JOIN Persons " +
-			"  ON Users.UserName = Persons.UserName " +
+				"ON Users.UserName = Persons.UserName " +
 			"WHERE Users.Subscribed=?;";
 		Connection connection = null;
 		PreparedStatement selectStmt = null;
