@@ -7,7 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Data access object (DAO) class to interact with the underlying Posts table in your MySQL
@@ -19,12 +21,14 @@ public class PostsDao {
 	
 	// Single pattern: instantiation is limited to one object.
 	private static PostsDao instance = null;
+	private static ProductsDao instanceProduct = null;
 	protected PostsDao() {
 		connectionManager = new ConnectionManager();
 	}
 	public static PostsDao getInstance() {
-		if(instance == null) {
+		if(instance == null && instanceProduct == null) {
 			instance = new PostsDao();
+			instanceProduct = new ProductsDao();
 		}
 		return instance;
 	}
@@ -114,6 +118,103 @@ public class PostsDao {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Get the Posts record by fetching it from your MySQL instance.
+	 * This runs a SELECT statement and returns a single Posts instance.
+	 */
+	public List<Posts> getPostsFromUserName(String userName) throws SQLException {
+		List<Posts> posts = new ArrayList<Posts>();
+
+		String selectPost = "SELECT PostId,Created,Review,Rating,NumInteractions,Active,UpVotes,DownVotes,Shares,UserName,ProductId FROM Posts WHERE UserName=?;";
+		Connection connection = null;
+		PreparedStatement selectStmt = null;
+		ResultSet results = null;
+		try {
+			connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(selectPost);
+			selectStmt.setString(1, userName);
+
+			results = selectStmt.executeQuery();
+			while(results.next()) {
+				int postId = results.getInt("PostId");
+				Date created = new Date(results.getTimestamp("Created").getTime());
+				String review = results.getString("Review");
+				double rating = results.getDouble("Rating");
+				int numInteractions = results.getInt("NumInteractions");
+				boolean active = results.getBoolean("Active");
+				int upVotes = results.getInt("UpVotes");
+				int downVotes = results.getInt("DownVotes");
+				int shares = results.getInt("Shares");
+				String resultsUserName = results.getString("UserName");
+				String productId = results.getString("ProductId");
+				
+				posts.add(new Posts(postId, created, review, rating, numInteractions, active, upVotes, downVotes, shares, resultsUserName, productId));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if(connection != null) {
+				connection.close();
+			}
+			if(selectStmt != null) {
+				selectStmt.close();
+			}
+			if(results != null) {
+				results.close();
+			}
+		}
+		return posts;
+	}
+		
+	/**
+	 * Get the Posts record by fetching it from your MySQL instance.
+	 * This runs a SELECT statement and returns a single Posts instance.
+	 */
+	public List<Posts> getAllPosts() throws SQLException {
+		List<Posts> posts = new ArrayList<Posts>();
+
+		String selectPost = "SELECT PostId,Created,Review,Rating,NumInteractions,Active,UpVotes,DownVotes,Shares,UserName,ProductId FROM Posts;";
+		Connection connection = null;
+		PreparedStatement selectStmt = null;
+		ResultSet results = null;
+		try {
+			connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(selectPost);
+
+			results = selectStmt.executeQuery();
+			while(results.next()) {
+				int postId = results.getInt("PostId");
+				Date created = new Date(results.getTimestamp("Created").getTime());
+				String review = results.getString("Review");
+				double rating = results.getDouble("Rating");
+				int numInteractions = results.getInt("NumInteractions");
+				boolean active = results.getBoolean("Active");
+				int upVotes = results.getInt("UpVotes");
+				int downVotes = results.getInt("DownVotes");
+				int shares = results.getInt("Shares");
+				String resultsUserName = results.getString("UserName");
+				String productId = results.getString("ProductId");
+				
+				posts.add(new Posts(postId, created, review, rating, numInteractions, active, upVotes, downVotes, shares, resultsUserName, productId));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if(connection != null) {
+				connection.close();
+			}
+			if(selectStmt != null) {
+				selectStmt.close();
+			}
+			if(results != null) {
+				results.close();
+			}
+		}
+		return posts;
 	}
 	
 	/**

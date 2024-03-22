@@ -8,27 +8,10 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Find a User</title>
+<title>All Users</title>
 </head>
 <body>
-	<form action="findusers" method="post">
-		<h1>Search for a User by FirstName</h1>
-		<p>
-			<label for="firstname">FirstName</label> <input id="firstname"
-				name="firstname" value="${fn:escapeXml(param.firstname)}">
-		</p>
-		<p>
-			<input type="submit"> <br />
-			<br />
-			<br /> <span id="successMessage"><b>${messages.success}</b></span>
-		</p>
-	</form>
-	<br />
-	<div id="userCreate">
-		<a href="usercreate">Create User</a>
-	</div>
-	<br />
-	<h1>Matching Users</h1>
+	<h1>All Users</h1>
 	<table border="1">
 		<tr>
 			<th>UserName</th>

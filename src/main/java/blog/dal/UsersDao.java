@@ -7,7 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Data access object (DAO) class to interact with the underlying Users table in your
@@ -100,32 +102,31 @@ public class UsersDao extends PersonsDao {
 		}
 		return null;
 	}
+	
+	public List<Users> getAllUsers() throws SQLException {
+		List<Users> users = new ArrayList<Users>();
 
-	public Users getUserFromSubscribed(boolean isSubscribed) throws SQLException {
-		// To build an BlogUser object, we need the Persons record, too.
 		String selectUser =
 			"SELECT Users.UserName AS UserName, Password, FirstName, LastName, Email, PhoneNumber, DoB, Subscribed " +
 			"FROM Users INNER JOIN Persons " +
-				"ON Users.UserName = Persons.UserName " +
-			"WHERE Users.Subscribed=?;";
+				"ON Users.UserName = Persons.UserName;";
 		Connection connection = null;
 		PreparedStatement selectStmt = null;
 		ResultSet results = null;
 		try {
 			connection = connectionManager.getConnection();
 			selectStmt = connection.prepareStatement(selectUser);
-			selectStmt.setBoolean(1, isSubscribed);
 			results = selectStmt.executeQuery();
-			if(results.next()) {
-				String resultUserName = results.getString("UserName");
+			while(results.next()) {
+				String userName = results.getString("UserName");
 				String password = results.getString("Password");
-				String firstName = results.getString("FirstName");
+				String resultFirstName = results.getString("FirstName");
 				String lastName = results.getString("LastName");
 				String email = results.getString("Email");
 				String phoneNumber = results.getString("PhoneNumber");
 				Date dob = new Date(results.getTimestamp("DoB").getTime());
 				boolean subscribed = results.getBoolean("Subscribed");
-				return new Users(resultUserName, password, firstName, lastName, email, phoneNumber, dob, subscribed);
+				users.add(new Users(userName, password, resultFirstName, lastName, email, phoneNumber, dob, subscribed));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -141,7 +142,96 @@ public class UsersDao extends PersonsDao {
 				results.close();
 			}
 		}
-		return null;
+		return users;
+	}
+	
+	public List<Users> getUsersFromFirstName(String firstName) throws SQLException {
+		List<Users> users = new ArrayList<Users>();
+
+		String selectUser =
+			"SELECT Users.UserName AS UserName, Password, FirstName, LastName, Email, PhoneNumber, DoB, Subscribed " +
+			"FROM Users INNER JOIN Persons " +
+				"ON Users.UserName = Persons.UserName " +
+			"WHERE Persons.FirstName=?;";
+		Connection connection = null;
+		PreparedStatement selectStmt = null;
+		ResultSet results = null;
+		try {
+			connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(selectUser);
+			selectStmt.setString(1, firstName);
+			results = selectStmt.executeQuery();
+			while(results.next()) {
+				String userName = results.getString("UserName");
+				String password = results.getString("Password");
+				String resultFirstName = results.getString("FirstName");
+				String lastName = results.getString("LastName");
+				String email = results.getString("Email");
+				String phoneNumber = results.getString("PhoneNumber");
+				Date dob = new Date(results.getTimestamp("DoB").getTime());
+				boolean subscribed = results.getBoolean("Subscribed");
+				users.add(new Users(userName, password, resultFirstName, lastName, email, phoneNumber, dob, subscribed));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if(connection != null) {
+				connection.close();
+			}
+			if(selectStmt != null) {
+				selectStmt.close();
+			}
+			if(results != null) {
+				results.close();
+			}
+		}
+		return users;
+	}
+
+
+	public List<Users> getUserFromSubscribed(boolean isSubscribed) throws SQLException {
+		List<Users> users = new ArrayList<Users>();
+
+		String selectUser =
+			"SELECT Users.UserName AS UserName, Password, FirstName, LastName, Email, PhoneNumber, DoB, Subscribed " +
+			"FROM Users INNER JOIN Persons " +
+				"ON Users.UserName = Persons.UserName " +
+			"WHERE Users.Subscribed=?;";
+		Connection connection = null;
+		PreparedStatement selectStmt = null;
+		ResultSet results = null;
+		try {
+			connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(selectUser);
+			selectStmt.setBoolean(1, isSubscribed);
+			results = selectStmt.executeQuery();
+			while(results.next()) {
+				String resultUserName = results.getString("UserName");
+				String password = results.getString("Password");
+				String firstName = results.getString("FirstName");
+				String lastName = results.getString("LastName");
+				String email = results.getString("Email");
+				String phoneNumber = results.getString("PhoneNumber");
+				Date dob = new Date(results.getTimestamp("DoB").getTime());
+				boolean subscribed = results.getBoolean("Subscribed");
+				users.add(new Users(resultUserName, password, firstName, lastName, email, phoneNumber, dob, subscribed));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if(connection != null) {
+				connection.close();
+			}
+			if(selectStmt != null) {
+				selectStmt.close();
+			}
+			if(results != null) {
+				results.close();
+			}
+		}
+		return users;
 	}
 	
 	

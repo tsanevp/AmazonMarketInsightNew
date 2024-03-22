@@ -8,25 +8,23 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>BlogComments</title>
+<title>See Achievements Earned</title>
 </head>
 <body>
 	<h1>${messages.title}</h1>
         <table border="1">
             <tr>
-                <th>CommentId</th>
-                <th>PostId</th>
+                <th>AchievementsEarnedId</th>
                 <th>UserName</th>
-                <th>Content</th>
-                <th>Created</th>
+                <th>AchievementId</th>
+                <th>DateEarned</th>
             </tr>
-            <c:forEach items="${blogComments}" var="blogComment" >
+            <c:forEach items="${achievementsEarned}" var="achievementsEarned" >
                 <tr>
-                    <td><c:out value="${blogComment.getCommentId()}" /></td>
-                    <td><c:out value="${blogComment.getBlogPost().getPostId()}" /></td>
-                    <td><c:out value="${blogComment.getBlogUser().getUserName()}" /></td>
-                    <td><c:out value="${blogComment.getContent()}" /></td>
-                    <td><fmt:formatDate value="${blogComment.getCreated()}" pattern="MM-dd-yyyy hh:mm:sa"/></td>
+                    <td><c:out value="${achievementsEarned.getAchievementEarnedId()}" /></td>
+                    <td><c:out value="${achievementsEarned.getUser().getUserName()}" /></td>
+                    <td><c:out value="${achievementsEarned.getAchievement().getAchievementId()}" /></td>
+                    <td><fmt:formatDate value="${achievementsEarned.getDateEarned()}" pattern="MM-dd-yyyy"/></td>
                 </tr>
             </c:forEach>
        </table>

@@ -11,16 +11,18 @@
 <title>Update a User</title>
 </head>
 <body>
-	<h1>Update BlogUser</h1>
+	<h1>Update User Subscription</h1>
 	<form action="userupdate" method="post">
 		<p>
 			<label for="username">UserName</label>
 			<input id="username" name="username" value="${fn:escapeXml(param.username)}">
 		</p>
+		<p>Want To Subscribe?</p>
+		<input type="radio" id="subscribed_yes" name="subscribed" value="true">
+		<label for="subscribed_yes">Yes</label> <input type="radio"
+			id="subscribed_no" name="subscribed" value="false"> <label
+			for="subscribed_no">No</label>
 		<p>
-			<label for="lastname">New LastName</label>
-			<input id="lastname" name="lastname" value="">
-		</p>
 		<p>
 			<input type="submit">
 		</p>
@@ -28,6 +30,8 @@
 	<br/><br/>
 	<p>
 		<span id="successMessage"><b>${messages.success}</b></span>
+		</br>
+		<span id="returnHome"><b><a href="${messages.home}">Return Home</a></b></span>
 	</p>
 </body>
 </html>

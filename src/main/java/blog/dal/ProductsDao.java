@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ProductsDao {
@@ -195,6 +196,43 @@ public class ProductsDao {
         return productList;
     }
 
+	public List<Products> getSimilarProductsToPost(int postId) throws SQLException {
+		List<Products> products = new ArrayList<Products>();
+
+		String selectProducts = "SELECT * FROM Products INNER JOIN \r\n"
+				+ "(SELECT PostId,Created,Review,Rating,NumInteractions,Active,UpVotes,DownVotes,Shares,UserName,Posts.ProductId,CategoryId FROM Posts INNER JOIN Products ON Posts.ProductId = Products.ProductId WHERE PostId = ?) AS CurrentPostInfo\r\n"
+				+ "ON Products.CategoryId = CurrentPostInfo.CategoryId\r\n"
+				+ "ORDER BY BoughtInLastMonth DESC, Stars DESC, Price, BestSeller DESC\r\n"
+				+ "Limit 10;";
+		Connection connection = null;
+		PreparedStatement selectStmt = null;
+		ResultSet results = null;
+		try {
+			connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(selectProducts);
+			selectStmt.setInt(1, postId);
+
+			results = selectStmt.executeQuery();
+			while(results.next()) {
+				products.add(parseProduct(results));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if(connection != null) {
+				connection.close();
+			}
+			if(selectStmt != null) {
+				selectStmt.close();
+			}
+			if(results != null) {
+				results.close();
+			}
+		}
+		return products;
+	}
+    
     private Products parseProduct(ResultSet resultSet) throws SQLException {
         String productId = resultSet.getString("ProductId");
         String title = resultSet.getString("Title");
