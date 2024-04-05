@@ -19,8 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-@WebServlet("/UserCreate")
-public class UserCreate extends HttpServlet {
+@WebServlet("/UserLogin")
+public class UserLogin extends HttpServlet {
 	
 	protected UsersDao usersDao;
 	
@@ -48,39 +48,28 @@ public class UserCreate extends HttpServlet {
 
         // Retrieve and validate name.
         String userName = req.getParameter("username");
-        if (userName == null || userName.trim().isEmpty()) {
+        String password = req.getParameter("password");
+
+        System.out.println(userName);
+        System.out.println(password);
+
+        if (userName == null || userName.trim().isEmpty() || password == null || password.trim().isEmpty()) {
             messages.put("success", "Invalid UserName");
         } else {
-        	// Create the User.
-        	String password = req.getParameter("password");
-        	String firstName = req.getParameter("firstname");
-        	String lastName = req.getParameter("lastname");
-        	String email = req.getParameter("email");
-        	String phoneNumber = req.getParameter("phonenumber");
-        	String subscribedValue = req.getParameter("subscribed");
-        	boolean isSubscribed = Boolean.parseBoolean(subscribedValue);
+        	// Get the User.
 
-        	// dob must be in the format yyyy-mm-dd.
-        	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        	String stringDob = req.getParameter("dob");
-        	Date dob = new Date();
-        	try {
-        		dob = dateFormat.parse(stringDob);
-        	} catch (ParseException e) {
-        		e.printStackTrace();
-				throw new IOException(e);
-        	}
 	        try {
-	        	// Exercise: parse the input for StatusLevel.
-	        	Users blogUser = new Users(userName, password, firstName, lastName, email, phoneNumber, dob, isSubscribed);
-	        	blogUser = usersDao.create(blogUser);
-	        	messages.put("success", "Successfully created " + userName);
+	        	Users user = usersDao.getUserFromUserName(userName);
+	        	
+	        	if (user.getPassword().equals(password)) {
+	                req.getRequestDispatcher("/LandingPage.jsp").forward(req, resp);
+	        	}
+	        	messages.put("success", "Successfully created ");
 	        } catch (SQLException e) {
 				e.printStackTrace();
 				throw new IOException(e);
 	        }
         }
-        
-        req.getRequestDispatcher("/UserCreate.jsp").forward(req, resp);
+    	req.getRequestDispatcher("/SignOnPage.jsp").forward(req, resp);
     }
 }

@@ -8,11 +8,11 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Create a User</title>
+<title>Create an accountr</title>
 </head>
 <body>
 	<h1>Create User</h1>
-	<form action="usercreate" method="post">
+	<form action="UserCreate" method="post">
 		<p>
 			<label for="username">UserName</label> <input id="username"
 				name="username" value="">

@@ -19,8 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-@WebServlet("/UserCreate")
-public class UserCreate extends HttpServlet {
+@WebServlet("/user")
+public class User extends HttpServlet {
 	
 	protected UsersDao usersDao;
 	
