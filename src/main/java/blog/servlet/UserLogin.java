@@ -5,10 +5,6 @@ import blog.model.*;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@SuppressWarnings("serial")
 @WebServlet("/UserLogin")
 public class UserLogin extends HttpServlet {
 

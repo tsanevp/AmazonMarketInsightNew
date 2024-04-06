@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
+@SuppressWarnings("serial")
 @WebServlet("/user")
 public class User extends HttpServlet {
 	

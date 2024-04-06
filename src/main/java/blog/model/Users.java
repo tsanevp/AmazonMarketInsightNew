@@ -16,6 +16,12 @@ public class Users extends Persons {
 		this.dob = dob;
 		this.subscribed = subscribed;
 	}
+	
+	public Users(String userName, String password, String firstName, String lastName, String email, String phoneNumber,
+			Date dob) {
+		super(userName, password, firstName, lastName, email, phoneNumber);
+		this.dob = dob;
+	}
 
 	public Date getDob() {
 		return dob;

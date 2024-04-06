@@ -4,56 +4,67 @@
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<link href="css/loginPage.css" rel="stylesheet">
+
 <title>Create an accountr</title>
+
 </head>
 <body>
-	<h1>Create User</h1>
-	<form action="UserCreate" method="post">
-		<p>
-			<label for="username">UserName</label> <input id="username"
-				name="username" value="">
-		</p>
-		<p>
-			<label for="password">Password</label> <input id="password"
-				name="password" value="">
-		</p>
-		<p>
-			<label for="firstname">FirstName</label> <input id="firstname"
-				name="firstname" value="">
-		</p>
-		<p>
-			<label for="lastname">LastName</label> <input id="lastname"
-				name="lastname" value="">
-		</p>
-		<p>
-			<label for="email">Email</label> <input id="email" name="email"
-				value="">
-		</p>
-		<p>
-			<label for="phonenumber">PhoneNumber</label> <input id="phonenumber"
-				name="phonenumber" value="">
-		</p>
-		<p>
-			<label for="dob">DoB (yyyy-mm-dd)</label> <input id="dob" name="dob"
-				value="">
-		</p>
-		<p>Is Subscribed?</p>
-		<input type="radio" id="subscribed_yes" name="subscribed" value="true">
-		<label for="subscribed_yes">Yes</label> <input type="radio"
-			id="subscribed_no" name="subscribed" value="false"> <label
-			for="subscribed_no">No</label>
-		<p>
-			<input type="submit">
-		</p>
-	</form>
-	<br />
-	<br />
-	<p>
-		<span id="successMessage"><b>${messages.success}</b></span>
-	</p>
+	<main class="form-signin">
+		<form action="UserCreate" method="post">
+
+			<h1 class="h3 mb-3 fw-normal">Create an account</h1>
+			<div class="form-floating">
+				<input type="text" class="form-control" id="username"
+					name="username" placeholder="Username" required> <label
+					for="username">Username</label>
+			</div>
+			<div class="form-floating">
+				<input type="password" class="form-control" id="floatingPassword"
+					name="password" placeholder="Password" required> <label
+					for="floatingPassword">Password</label>
+			</div>
+			<div class="form-floating">
+				<input type="text" class="form-control" id="firstname"
+					name="firstname" placeholder="First Name" required> <label
+					for="firstname">First Name</label>
+			</div>
+			<div class="form-floating">
+				<input type="text" class="form-control" id="lastname"
+					name="lastname" placeholder="Last Name" required> <label
+					for="lastname">Last Name</label>
+			</div>
+			<div class="form-floating">
+				<input type="email" class="form-control" id="email" name="email"
+					placeholder="Email" required> <label for="Email">Email</label>
+			</div>
+			<div class="form-floating">
+				<input type="tel" class="form-control" id="phonenumber"
+					pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" name="phonenumber"
+					placeholder="Phone Number" required> <label
+					for="phonenumber">Phone Number</label>
+			</div>
+			<div class="form-floating">
+				<input type="date" class="form-control" id="dob" name="dob"
+					placeholder="DoB" required> <label for="dob">Date
+					of Birth</label>
+			</div>
+			<p>
+				<span id="successMessage"><b>${messages.error}</b></span>
+			</p>
+			<button class="btn btn-primary w-100 py-2" type="submit">Create
+				account</button>
+			<p>
+				<span id="successMessage"><b>${messages.success}</b></span>
+			</p>
+		</form>
+	</main>
 </body>
 </html>
