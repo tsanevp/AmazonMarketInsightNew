@@ -22,16 +22,16 @@
 			<h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 			<div class="form-floating">
 				<input type="text" class="form-control" id="username"
-					name="username" placeholder="username"> <label
+					name="username" placeholder="username" required> <label
 					for="username">Username</label>
 			</div>
 			<div class="form-floating">
 				<input type="password" class="form-control" id="floatingPassword"
-					name="password" placeholder="Password"> <label
+					name="password" placeholder="Password" required> <label
 					for="floatingPassword">Password</label>
 			</div>
 			<p>
-				<span id="successMessage"><b>${messages.success}</b></span>
+				<span id="successMessage"><b>${messages.error}</b></span>
 			</p>
 			<div class="form-check text-start my-3">
 				<input class="form-check-input" type="checkbox" value="remember-me"

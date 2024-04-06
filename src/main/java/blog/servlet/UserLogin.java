@@ -18,58 +18,71 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 @WebServlet("/UserLogin")
 public class UserLogin extends HttpServlet {
-	
+
 	protected UsersDao usersDao;
-	
+
 	@Override
 	public void init() throws ServletException {
 		usersDao = UsersDao.getInstance();
 	}
-	
+
 	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// Map for storing messages.
-        Map<String, String> messages = new HashMap<String, String>();
-        req.setAttribute("messages", messages);
-        //Just render the JSP.   
-        req.getRequestDispatcher("/UserCreate.jsp").forward(req, resp);
+		Map<String, String> messages = new HashMap<String, String>();
+		req.setAttribute("messages", messages);
+		// Just render the JSP.
+		req.getRequestDispatcher("/UserCreate.jsp").forward(req, resp);
 	}
-	
+
 	@Override
-    public void doPost(HttpServletRequest req, HttpServletResponse resp)
-    		throws ServletException, IOException {
-        // Map for storing messages.
-        Map<String, String> messages = new HashMap<String, String>();
-        req.setAttribute("messages", messages);
+	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// Map for storing messages.
+		Map<String, String> messages = new HashMap<String, String>();
+		req.setAttribute("messages", messages);
 
-        // Retrieve and validate name.
-        String userName = req.getParameter("username");
-        String password = req.getParameter("password");
+		// Retrieve and validate name.
+		String userName = req.getParameter("username");
+		String password = req.getParameter("password");
 
-        System.out.println(userName);
-        System.out.println(password);
+		System.out.println(userName);
+		System.out.println(password);
 
-        if (userName == null || userName.trim().isEmpty() || password == null || password.trim().isEmpty()) {
-            messages.put("success", "Invalid UserName");
-        } else {
-        	// Get the User.
+		if (userName == null || userName.trim().isEmpty() || password == null || password.trim().isEmpty()) {
+			messages.put("error", "Invalid UserName or Password");
+			req.getRequestDispatcher("/SignOnPage.jsp").forward(req, resp);
+			return;
+		}
 
-	        try {
-	        	Users user = usersDao.getUserFromUserName(userName);
-	        	
-	        	if (user.getPassword().equals(password)) {
-	                req.getRequestDispatcher("/LandingPage.jsp").forward(req, resp);
-	        	}
-	        	messages.put("success", "Successfully created ");
-	        } catch (SQLException e) {
-				e.printStackTrace();
-				throw new IOException(e);
-	        }
-        }
-    	req.getRequestDispatcher("/SignOnPage.jsp").forward(req, resp);
-    }
+		try {
+			// Attempt to fetch the user from the database
+			Users user = usersDao.getUserFromUserName(userName);
+
+			// If user doesn't exist, redirect to sign-on page
+			if (user == null) {
+				messages.put("error", "User does not exist. Please create an account");
+				req.getRequestDispatcher("/SignOnPage.jsp").forward(req, resp);
+				return;
+			}
+
+			// Check if password matches
+			if (user.getPassword().equals(password)) {
+				// Redirect to landing page after successful login
+				resp.sendRedirect(req.getContextPath() + "/LandingPage.jsp");
+				return;
+			} else {
+				messages.put("error", "Incorrect password");
+				req.getRequestDispatcher("/SignOnPage.jsp").forward(req, resp);
+				return;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			messages.put("error", "An error occurred. Please try again later");
+			req.getRequestDispatcher("/SignOnPage.jsp").forward(req, resp);
+			return;
+		}
+	}
 }
