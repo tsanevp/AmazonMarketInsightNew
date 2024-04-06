@@ -31,7 +31,7 @@ public class UserLogin extends HttpServlet {
 		Map<String, String> messages = new HashMap<String, String>();
 		req.setAttribute("messages", messages);
 		// Just render the JSP.
-		req.getRequestDispatcher("/UserCreate.jsp").forward(req, resp);
+		req.getRequestDispatcher("/SignOnPage.jsp").forward(req, resp);
 	}
 
 	@Override
