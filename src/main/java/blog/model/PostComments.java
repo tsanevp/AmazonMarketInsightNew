@@ -10,7 +10,7 @@ public class PostComments {
 	protected int downVotes;
 	protected String userName;
 	protected int postId;
-	
+
 	public PostComments(int postCommentId, Date created, String comment, int upVotes, int downVotes, String userName,
 			int postId) {
 		this.postCommentId = postCommentId;

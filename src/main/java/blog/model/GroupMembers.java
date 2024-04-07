@@ -11,7 +11,7 @@ public class GroupMembers {
 	public enum Roles {
 		OWNER, ADMIN, MEMBER
 	};
-	
+
 	public GroupMembers(int groupId, String userName, Roles role, Date joinDate) {
 		this.groupId = groupId;
 		this.userName = userName;

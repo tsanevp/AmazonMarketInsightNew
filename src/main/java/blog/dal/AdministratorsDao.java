@@ -8,28 +8,29 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Data access object (DAO) class to interact with the underlying Administrators table in your
- * MySQL instance. This is used to store {@link Administrators} into your MySQL instance and 
- * retrieve {@link Administrators} from MySQL instance.
+ * Data access object (DAO) class to interact with the underlying Administrators
+ * table in your MySQL instance. This is used to store {@link Administrators}
+ * into your MySQL instance and retrieve {@link Administrators} from MySQL
+ * instance.
  */
 public class AdministratorsDao extends PersonsDao {
 	private static AdministratorsDao instance = null;
-	
+
 	protected AdministratorsDao() {
 		super();
 	}
-	
+
 	public static AdministratorsDao getInstance() {
-		if(instance == null) {
+		if (instance == null) {
 			instance = new AdministratorsDao();
 		}
 		return instance;
 	}
-	
+
 	public Administrators create(Administrators administrator) throws SQLException {
 		// Insert into the superclass table first.
 		create(new Persons(administrator.getUserName(), administrator.getPassword(), administrator.getFirstName(),
-			administrator.getLastName(), administrator.getEmail(), administrator.getPhoneNumber()));
+				administrator.getLastName(), administrator.getEmail(), administrator.getPhoneNumber()));
 
 		String insertAdministrator = "INSERT INTO Administrators(UserName,CanEditPosts,CanDeletePosts) VALUES(?,?,?);";
 		Connection connection = null;
@@ -46,10 +47,10 @@ public class AdministratorsDao extends PersonsDao {
 			e.printStackTrace();
 			throw e;
 		} finally {
-			if(connection != null) {
+			if (connection != null) {
 				connection.close();
 			}
-			if(insertStmt != null) {
+			if (insertStmt != null) {
 				insertStmt.close();
 			}
 		}
@@ -57,11 +58,9 @@ public class AdministratorsDao extends PersonsDao {
 
 	public Administrators getAdministratorFromUserName(String userName) throws SQLException {
 		// To build an Administrator object, we need the Persons record, too.
-		String selectAdministrator =
-			"SELECT Administrators.UserName AS UserName, Password, FirstName, LastName, Email, PhoneNumber, CanEditPosts, CanDeletePosts " +
-			"FROM Administrators INNER JOIN Persons " +
-				"ON Administrators.UserName = Persons.UserName " +
-			"WHERE Administrators.UserName=?;";
+		String selectAdministrator = "SELECT Administrators.UserName AS UserName, Password, FirstName, LastName, Email, PhoneNumber, CanEditPosts, CanDeletePosts "
+				+ "FROM Administrators INNER JOIN Persons " + "ON Administrators.UserName = Persons.UserName "
+				+ "WHERE Administrators.UserName=?;";
 		Connection connection = null;
 		PreparedStatement selectStmt = null;
 		ResultSet results = null;
@@ -69,9 +68,9 @@ public class AdministratorsDao extends PersonsDao {
 			connection = connectionManager.getConnection();
 			selectStmt = connection.prepareStatement(selectAdministrator);
 			selectStmt.setString(1, userName);
-			
+
 			results = selectStmt.executeQuery();
-			if(results.next()) {
+			if (results.next()) {
 				String resultUserName = results.getString("UserName");
 				String password = results.getString("Password");
 				String firstName = results.getString("FirstName");
@@ -80,31 +79,33 @@ public class AdministratorsDao extends PersonsDao {
 				String phoneNumber = results.getString("PhoneNumber");
 				boolean canEditPosts = results.getBoolean("CanEditPosts");
 				boolean canDeletePosts = results.getBoolean("CanDeletePosts");
-				
-				return new Administrators(resultUserName, password, firstName, lastName, email, phoneNumber, canEditPosts, canDeletePosts);
+
+				return new Administrators(resultUserName, password, firstName, lastName, email, phoneNumber,
+						canEditPosts, canDeletePosts);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw e;
 		} finally {
-			if(connection != null) {
+			if (connection != null) {
 				connection.close();
 			}
-			if(selectStmt != null) {
+			if (selectStmt != null) {
 				selectStmt.close();
 			}
-			if(results != null) {
+			if (results != null) {
 				results.close();
 			}
 		}
 		return null;
 	}
-	
+
 	/**
-	 * Update the LastName of the Administrators instance.
-	 * This runs a UPDATE statement.
+	 * Update the LastName of the Administrators instance. This runs a UPDATE
+	 * statement.
 	 */
-	public Administrators updateEditPermissions(Administrators administrator, boolean newEditPermission) throws SQLException {
+	public Administrators updateEditPermissions(Administrators administrator, boolean newEditPermission)
+			throws SQLException {
 		String updateAdministrator = "UPDATE Administrators SET CanEditPosts=? WHERE UserName=?;";
 		Connection connection = null;
 		PreparedStatement updateStmt = null;
@@ -114,7 +115,7 @@ public class AdministratorsDao extends PersonsDao {
 			updateStmt.setBoolean(1, newEditPermission);
 			updateStmt.setString(2, administrator.getUserName());
 			updateStmt.executeUpdate();
-			
+
 			// Update the person param before returning to the caller.
 			administrator.setCanEditPosts(newEditPermission);
 			return administrator;
@@ -122,18 +123,17 @@ public class AdministratorsDao extends PersonsDao {
 			e.printStackTrace();
 			throw e;
 		} finally {
-			if(connection != null) {
+			if (connection != null) {
 				connection.close();
 			}
-			if(updateStmt != null) {
+			if (updateStmt != null) {
 				updateStmt.close();
 			}
 		}
 	}
 
 	/**
-	 * Delete the Administrators instance.
-	 * This runs a DELETE statement.
+	 * Delete the Administrators instance. This runs a DELETE statement.
 	 */
 	public Administrators delete(Administrators administrator) throws SQLException {
 		String deleteAdministrator = "DELETE FROM Administrators WHERE UserName=?;";
@@ -152,10 +152,10 @@ public class AdministratorsDao extends PersonsDao {
 			e.printStackTrace();
 			throw e;
 		} finally {
-			if(connection != null) {
+			if (connection != null) {
 				connection.close();
 			}
-			if(deleteStmt != null) {
+			if (deleteStmt != null) {
 				deleteStmt.close();
 			}
 		}

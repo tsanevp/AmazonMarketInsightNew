@@ -8,28 +8,28 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Data access object (DAO) class to interact with the underlying Wishlist table in your MySQL
- * instance. This is used to store {@link Wishlist} into your MySQL instance and retrieve 
- * {@link Wishlist} from MySQL instance.
+ * Data access object (DAO) class to interact with the underlying Wishlist table
+ * in your MySQL instance. This is used to store {@link Wishlist} into your
+ * MySQL instance and retrieve {@link Wishlist} from MySQL instance.
  */
 public class WishlistDao {
 	protected ConnectionManager connectionManager;
 	private static WishlistDao instance = null;
-	
+
 	protected WishlistDao() {
 		connectionManager = new ConnectionManager();
 	}
-	
+
 	public static WishlistDao getInstance() {
-		if(instance == null) {
+		if (instance == null) {
 			instance = new WishlistDao();
 		}
 		return instance;
 	}
 
 	/**
-	 * Save the Wishlist instance by storing it in your MySQL instance.
-	 * This runs a INSERT statement.
+	 * Save the Wishlist instance by storing it in your MySQL instance. This runs a
+	 * INSERT statement.
 	 */
 	public Wishlist create(Wishlist wishlist) throws SQLException {
 		String insertWishlist = "INSERT INTO Wishlist(WishListId,UserName,ProductId) VALUES(?,?,?);";
@@ -43,24 +43,24 @@ public class WishlistDao {
 			insertStmt.setString(2, wishlist.getUserName());
 			insertStmt.setString(3, wishlist.getProductId());
 			insertStmt.executeUpdate();
-			
+
 			return wishlist;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw e;
 		} finally {
-			if(connection != null) {
+			if (connection != null) {
 				connection.close();
 			}
-			if(insertStmt != null) {
+			if (insertStmt != null) {
 				insertStmt.close();
 			}
 		}
 	}
 
 	/**
-	 * Get the Wishlist record by fetching it from your MySQL instance.
-	 * This runs a SELECT statement and returns a single Wishlist instance.
+	 * Get the Wishlist record by fetching it from your MySQL instance. This runs a
+	 * SELECT statement and returns a single Wishlist instance.
 	 */
 	public Wishlist getWishlistFromId(int wishlistId) throws SQLException {
 		String selectWishlist = "SELECT WishListId,UserName,ProductId FROM Wishlist WHERE WishListId=?;";
@@ -73,7 +73,7 @@ public class WishlistDao {
 			selectStmt.setInt(1, wishlistId);
 
 			results = selectStmt.executeQuery();
-			if(results.next()) {
+			if (results.next()) {
 				int resultWishlistId = results.getInt("WishListId");
 				String userName = results.getString("UserName");
 				String productId = results.getString("ProductId");
@@ -84,13 +84,13 @@ public class WishlistDao {
 			e.printStackTrace();
 			throw e;
 		} finally {
-			if(connection != null) {
+			if (connection != null) {
 				connection.close();
 			}
-			if(selectStmt != null) {
+			if (selectStmt != null) {
 				selectStmt.close();
 			}
-			if(results != null) {
+			if (results != null) {
 				results.close();
 			}
 		}
@@ -98,8 +98,7 @@ public class WishlistDao {
 	}
 
 	/**
-	 * Delete the Wishlist instance.
-	 * This runs a DELETE statement.
+	 * Delete the Wishlist instance. This runs a DELETE statement.
 	 */
 	public Wishlist delete(Wishlist wishlist) throws SQLException {
 		String deleteWishlist = "DELETE FROM Wishlist WHERE WishListId=?;";
@@ -117,10 +116,10 @@ public class WishlistDao {
 			e.printStackTrace();
 			throw e;
 		} finally {
-			if(connection != null) {
+			if (connection != null) {
 				connection.close();
 			}
-			if(deleteStmt != null) {
+			if (deleteStmt != null) {
 				deleteStmt.close();
 			}
 		}

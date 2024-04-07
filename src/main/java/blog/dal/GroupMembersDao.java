@@ -68,8 +68,9 @@ public class GroupMembersDao {
 				String resultUserName = results.getString("UserName");
 				String role = results.getString("Role");
 				Date joinDate = new Date(results.getTimestamp("JoinDate").getTime());
-				
-				return new GroupMembers(resultGroupId, resultUserName, GroupMembers.Roles.valueOf(role.toUpperCase()), joinDate);
+
+				return new GroupMembers(resultGroupId, resultUserName, GroupMembers.Roles.valueOf(role.toUpperCase()),
+						joinDate);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -87,7 +88,7 @@ public class GroupMembersDao {
 		}
 		return null;
 	}
-	
+
 	public GroupMembers updateRole(GroupMembers groupMember, GroupMembers.Roles newRole) throws SQLException {
 		String updateGroupMember = "UPDATE GroupMembers SET Role=? WHERE GroupId=? AND UserName=?;";
 		Connection connection = null;
@@ -100,7 +101,7 @@ public class GroupMembersDao {
 			updateStmt.setString(3, groupMember.getUserName());
 
 			updateStmt.executeUpdate();
-			
+
 			groupMember.setRole(newRole);
 			return groupMember;
 		} catch (SQLException e) {

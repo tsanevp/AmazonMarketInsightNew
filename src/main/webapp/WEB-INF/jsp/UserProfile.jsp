@@ -54,7 +54,7 @@
 </style>
 </head>
 <body>
-	<jsp:include page="header.jsp" />
+	<jsp:include page="Header.jsp" />
 
 	<div class="container mt-5">
 		<h1 class="mb-4">User Profile</h1>
@@ -83,7 +83,9 @@
 				</div>
 				<div class="form-group">
 					<label for="currentDob">Date of Birth</label>
-					<p id="currentDob">${user.dob}</p>
+					<p id="currentDob">
+						<fmt:formatDate value="${user.dob}" pattern="MM/dd/yyyy" />
+					</p>
 				</div>
 				<div class="form-group">
 					<label for="currentSubscribed">Subscribed</label>
@@ -92,7 +94,8 @@
 			</div>
 			<div class="col-md-6 update-info">
 				<h3>Update Information</h3>
-				<form action="update_user" method="post">
+				<form action="update_user" method="post">		    
+			        <!-- Input fields for updated information -->    
 					<div class="form-group">
 						<label for="firstName">First Name</label> <input type="text"
 							class="form-control" id="firstName" name="firstName"
@@ -126,7 +129,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
 		type="text/javascript"></script>

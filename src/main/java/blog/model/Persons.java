@@ -10,7 +10,7 @@ public class Persons {
 	protected String lastName;
 	protected String email;
 	protected String phoneNumber;
-	
+
 	public Persons(String userName, String password, String firstName, String lastName, String email,
 			String phoneNumber) {
 		this.userName = userName;

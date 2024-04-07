@@ -14,7 +14,7 @@ public class Posts {
 	protected int shares;
 	protected String userName;
 	protected String productId;
-	
+
 	public Posts(int postId, Date created, String review, double rating, int numInteractions, boolean active,
 			int upVotes, int downVotes, int shares, String userName, String productId) {
 		this.postId = postId;

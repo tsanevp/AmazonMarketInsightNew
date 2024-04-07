@@ -11,30 +11,29 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
 /**
- * Data access object (DAO) class to interact with the underlying CreditCards table in your MySQL
- * instance. This is used to store {@link CreditCards} into your MySQL instance and retrieve 
- * {@link CreditCards} from MySQL instance.
+ * Data access object (DAO) class to interact with the underlying CreditCards
+ * table in your MySQL instance. This is used to store {@link CreditCards} into
+ * your MySQL instance and retrieve {@link CreditCards} from MySQL instance.
  */
 public class CreditCardsDao {
 	protected ConnectionManager connectionManager;
 	private static CreditCardsDao instance = null;
-	
+
 	protected CreditCardsDao() {
 		connectionManager = new ConnectionManager();
 	}
-	
+
 	public static CreditCardsDao getInstance() {
-		if(instance == null) {
+		if (instance == null) {
 			instance = new CreditCardsDao();
 		}
 		return instance;
 	}
 
 	/**
-	 * Save the CreditCards instance by storing it in your MySQL instance.
-	 * This runs a INSERT statement.
+	 * Save the CreditCards instance by storing it in your MySQL instance. This runs
+	 * a INSERT statement.
 	 */
 	public CreditCards create(CreditCards creditCard) throws SQLException {
 		String insertCreditCard = "INSERT INTO CreditCards(CardNumber,Expiration,UserName) VALUES(?,?,?);";
@@ -48,24 +47,24 @@ public class CreditCardsDao {
 			insertStmt.setTimestamp(2, new Timestamp(creditCard.getExpiration().getTime()));
 			insertStmt.setString(3, creditCard.getUserName());
 			insertStmt.executeUpdate();
-			
+
 			return creditCard;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw e;
 		} finally {
-			if(connection != null) {
+			if (connection != null) {
 				connection.close();
 			}
-			if(insertStmt != null) {
+			if (insertStmt != null) {
 				insertStmt.close();
 			}
 		}
 	}
 
 	/**
-	 * Get the CreditCards record by fetching it from your MySQL instance.
-	 * This runs a SELECT statement and returns a single CreditCards instance.
+	 * Get the CreditCards record by fetching it from your MySQL instance. This runs
+	 * a SELECT statement and returns a single CreditCards instance.
 	 */
 	public CreditCards getCreditCardFromId(long cardNumber) throws SQLException {
 		String selectCreditCard = "SELECT CardNumber,Expiration,UserName FROM CreditCards WHERE CardNumber=?;";
@@ -78,7 +77,7 @@ public class CreditCardsDao {
 			selectStmt.setLong(1, cardNumber);
 
 			results = selectStmt.executeQuery();
-			if(results.next()) {
+			if (results.next()) {
 				long resultCardNumber = results.getLong("CardNumber");
 				Date expiration = new Date(results.getTimestamp("Expiration").getTime());
 				String userName = results.getString("UserName");
@@ -89,22 +88,22 @@ public class CreditCardsDao {
 			e.printStackTrace();
 			throw e;
 		} finally {
-			if(connection != null) {
+			if (connection != null) {
 				connection.close();
 			}
-			if(selectStmt != null) {
+			if (selectStmt != null) {
 				selectStmt.close();
 			}
-			if(results != null) {
+			if (results != null) {
 				results.close();
 			}
 		}
 		return null;
 	}
-	
+
 	/**
-	 * Gets all CreditCards who have the same UserName. This runs a SELECT
-	 * statement and returns a list of matching CreditCards.
+	 * Gets all CreditCards who have the same UserName. This runs a SELECT statement
+	 * and returns a list of matching CreditCards.
 	 * 
 	 * @param userName - The userName to query for.
 	 * @return - A list of matching CreditCards.
@@ -145,9 +144,10 @@ public class CreditCardsDao {
 		}
 		return creditCards;
 	}
+
 	/**
-	 * Update the LastName of the CreditCards instance.
-	 * This runs a UPDATE statement.
+	 * Update the LastName of the CreditCards instance. This runs a UPDATE
+	 * statement.
 	 */
 	public CreditCards updateExpiration(CreditCards creditCard, Date newExpiration) throws SQLException {
 		String updateCreditCard = "UPDATE CreditCards SET Expiration=? WHERE CardNumber=?;";
@@ -159,7 +159,7 @@ public class CreditCardsDao {
 			updateStmt.setTimestamp(1, new Timestamp(newExpiration.getTime()));
 			updateStmt.setLong(2, creditCard.getCardNumber());
 			updateStmt.executeUpdate();
-			
+
 			// Update the creditCard param before returning to the caller.
 			creditCard.setExpiration(newExpiration);
 			return creditCard;
@@ -167,18 +167,17 @@ public class CreditCardsDao {
 			e.printStackTrace();
 			throw e;
 		} finally {
-			if(connection != null) {
+			if (connection != null) {
 				connection.close();
 			}
-			if(updateStmt != null) {
+			if (updateStmt != null) {
 				updateStmt.close();
 			}
 		}
 	}
 
 	/**
-	 * Delete the CreditCards instance.
-	 * This runs a DELETE statement.
+	 * Delete the CreditCards instance. This runs a DELETE statement.
 	 */
 	public CreditCards delete(CreditCards creditCard) throws SQLException {
 		String deleteCreditCard = "DELETE FROM CreditCards WHERE CardNumber=?;";
@@ -196,10 +195,10 @@ public class CreditCardsDao {
 			e.printStackTrace();
 			throw e;
 		} finally {
-			if(connection != null) {
+			if (connection != null) {
 				connection.close();
 			}
-			if(deleteStmt != null) {
+			if (deleteStmt != null) {
 				deleteStmt.close();
 			}
 		}

@@ -7,7 +7,7 @@ public class UserGroups {
 	protected String groupName;
 	protected Date created;
 	protected int categoryId;
-	
+
 	public UserGroups(int groupId, String groupName, Date created, int categoryId) {
 		this.groupId = groupId;
 		this.groupName = groupName;

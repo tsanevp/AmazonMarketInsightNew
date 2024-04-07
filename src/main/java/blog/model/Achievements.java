@@ -2,12 +2,11 @@ package blog.model;
 
 import java.util.Date;
 
-
 public class Achievements {
 	protected int achievementId;
 	protected String name;
 	protected Date created;
-	
+
 	public Achievements(int achievementId, String name, Date created) {
 		this.achievementId = achievementId;
 		this.name = name;

@@ -8,28 +8,30 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Data access object (DAO) class to interact with the underlying Persons table in your MySQL
- * instance. This is used to store {@link Persons} into your MySQL instance and retrieve 
- * {@link Persons} from MySQL instance.
+ * Data access object (DAO) class to interact with the underlying Persons table
+ * in your MySQL instance. This is used to store {@link Persons} into your MySQL
+ * instance and retrieve {@link Persons} from MySQL instance.
  */
 public class PersonsDao {
 	protected ConnectionManager connectionManager;
-	
+
 	// Single pattern: instantiation is limited to one object.
 	private static PersonsDao instance = null;
+
 	protected PersonsDao() {
 		connectionManager = new ConnectionManager();
 	}
+
 	public static PersonsDao getInstance() {
-		if(instance == null) {
+		if (instance == null) {
 			instance = new PersonsDao();
 		}
 		return instance;
 	}
 
 	/**
-	 * Save the Persons instance by storing it in your MySQL instance.
-	 * This runs a INSERT statement.
+	 * Save the Persons instance by storing it in your MySQL instance. This runs a
+	 * INSERT statement.
 	 */
 	public Persons create(Persons person) throws SQLException {
 		String insertPerson = "INSERT INTO Persons(UserName,Password,FirstName,LastName,Email,PhoneNumber) VALUES(?,?,?,?,?,?);";
@@ -46,24 +48,24 @@ public class PersonsDao {
 			insertStmt.setString(5, person.getEmail());
 			insertStmt.setString(6, person.getPhoneNumber());
 			insertStmt.executeUpdate();
-			
+
 			return person;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw e;
 		} finally {
-			if(connection != null) {
+			if (connection != null) {
 				connection.close();
 			}
-			if(insertStmt != null) {
+			if (insertStmt != null) {
 				insertStmt.close();
 			}
 		}
 	}
 
 	/**
-	 * Get the Persons record by fetching it from your MySQL instance.
-	 * This runs a SELECT statement and returns a single Persons instance.
+	 * Get the Persons record by fetching it from your MySQL instance. This runs a
+	 * SELECT statement and returns a single Persons instance.
 	 */
 	public Persons getPersonFromUserName(String userName) throws SQLException {
 		String selectPerson = "SELECT UserName,Password,FirstName,LastName,Email,PhoneNumber FROM Persons WHERE UserName=?;";
@@ -76,7 +78,7 @@ public class PersonsDao {
 			selectStmt.setString(1, userName);
 
 			results = selectStmt.executeQuery();
-			if(results.next()) {
+			if (results.next()) {
 				String resultUserName = results.getString("UserName");
 				String password = results.getString("Password");
 				String firstName = results.getString("FirstName");
@@ -89,22 +91,54 @@ public class PersonsDao {
 			e.printStackTrace();
 			throw e;
 		} finally {
-			if(connection != null) {
+			if (connection != null) {
 				connection.close();
 			}
-			if(selectStmt != null) {
+			if (selectStmt != null) {
 				selectStmt.close();
 			}
-			if(results != null) {
+			if (results != null) {
 				results.close();
 			}
 		}
 		return null;
 	}
-	
+
 	/**
-	 * Update the LastName of the Persons instance.
-	 * This runs a UPDATE statement.
+	 * Update all of the fields of the Persons instance. This runs a UPDATE
+	 * statement.
+	 */
+	public Users updatePerson(Users person) throws SQLException {
+		String updatePerson = "UPDATE Persons SET FirstName=?, LastName=?, Email=?, PhoneNumber=? WHERE UserName=?;";
+
+		Connection connection = null;
+		PreparedStatement updateStmt = null;
+		try {
+			connection = connectionManager.getConnection();
+			updateStmt = connection.prepareStatement(updatePerson);
+			updateStmt.setString(1, person.getFirstName());
+			updateStmt.setString(2, person.getLastName());
+			updateStmt.setString(3, person.getEmail());
+			updateStmt.setString(4, person.getPhoneNumber());
+			updateStmt.setString(5, person.getUserName());
+			updateStmt.executeUpdate();
+
+			return person;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
+			if (updateStmt != null) {
+				updateStmt.close();
+			}
+		}
+	}
+
+	/**
+	 * Update the LastName of the Persons instance. This runs a UPDATE statement.
 	 */
 	public Persons updateFirstName(Persons person, String newFirstName) throws SQLException {
 		String updatePerson = "UPDATE Persons SET FirstName=? WHERE UserName=?;";
@@ -116,7 +150,7 @@ public class PersonsDao {
 			updateStmt.setString(1, newFirstName);
 			updateStmt.setString(2, person.getUserName());
 			updateStmt.executeUpdate();
-			
+
 			// Update the person param before returning to the caller.
 			person.setFirstName(newFirstName);
 			return person;
@@ -124,18 +158,17 @@ public class PersonsDao {
 			e.printStackTrace();
 			throw e;
 		} finally {
-			if(connection != null) {
+			if (connection != null) {
 				connection.close();
 			}
-			if(updateStmt != null) {
+			if (updateStmt != null) {
 				updateStmt.close();
 			}
 		}
 	}
 
 	/**
-	 * Delete the Persons instance.
-	 * This runs a DELETE statement.
+	 * Delete the Persons instance. This runs a DELETE statement.
 	 */
 	public Persons delete(Persons person) throws SQLException {
 		String deletePerson = "DELETE FROM Persons WHERE UserName=?;";
@@ -153,10 +186,10 @@ public class PersonsDao {
 			e.printStackTrace();
 			throw e;
 		} finally {
-			if(connection != null) {
+			if (connection != null) {
 				connection.close();
 			}
-			if(deleteStmt != null) {
+			if (deleteStmt != null) {
 				deleteStmt.close();
 			}
 		}

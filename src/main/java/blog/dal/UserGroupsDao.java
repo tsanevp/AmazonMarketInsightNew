@@ -67,7 +67,7 @@ public class UserGroupsDao {
 				String groupName = results.getString("GroupName");
 				Date created = new Date(results.getTimestamp("Created").getTime());
 				int categoryId = results.getInt("CategoryId");
-				
+
 				return new UserGroups(resultUserGroupId, groupName, created, categoryId);
 			}
 		} catch (SQLException e) {
@@ -86,7 +86,7 @@ public class UserGroupsDao {
 		}
 		return null;
 	}
-	
+
 	public UserGroups updateName(UserGroups userGroup, String newName) throws SQLException {
 		String updateUserGroup = "UPDATE UserGroups SET GroupName=? WHERE GroupId=?;";
 		Connection connection = null;
@@ -98,7 +98,7 @@ public class UserGroupsDao {
 			updateStmt.setInt(2, userGroup.getGroupId());
 
 			updateStmt.executeUpdate();
-			
+
 			userGroup.setGroupName(newName);
 			return userGroup;
 		} catch (SQLException e) {

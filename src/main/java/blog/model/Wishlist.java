@@ -4,7 +4,7 @@ public class Wishlist {
 	protected int wishListId;
 	protected String userName;
 	protected String productId;
-	
+
 	public Wishlist(int wishListId, String userName, String productId) {
 		this.wishListId = wishListId;
 		this.userName = userName;

@@ -49,7 +49,7 @@ public class CategoriesDao {
 			}
 		}
 	}
-	
+
 	public Categories updateName(Categories category, String newName) throws SQLException {
 		String updateCategory = "UPDATE Categories SET Name=? WHERE categoryId=?;";
 		Connection connection = null;

@@ -7,7 +7,7 @@ public class AchievementsEarned {
 	protected Date dateEarned;
 	protected String userName;
 	protected int achievementId;
-	
+
 	public AchievementsEarned(int achievementEarnedId, Date dateEarned, String userName, int achievementId) {
 		this.achievementEarnedId = achievementEarnedId;
 		this.dateEarned = dateEarned;
