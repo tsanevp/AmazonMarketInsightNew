@@ -2,6 +2,7 @@ package blog.servlet;
 
 import blog.dal.*;
 import blog.model.*;
+import blog.util.SessionUtil;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -31,10 +32,9 @@ public class HomePage extends HttpServlet {
 
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		HttpSession session = req.getSession(false);
+		String username = SessionUtil.getUsername(req, resp);
 		
-		if (session == null || session.getAttribute("username") == null) {
-			resp.sendRedirect("login");
+		if (username == null) {
 			return;
 		}
 		

@@ -2,15 +2,66 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-<link type="text/css" href="style.css" rel="stylesheet">
+<!-- <link rel="stylesheet" type="text/css" href="/css/style.css"> -->
+
+<style type="text/css">
+body, html {
+	height: 100%;
+}
+
+body {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	margin: 0;
+}
+
+.form-signin {
+	width: 100%;
+	max-width: 330px;
+	padding: 15px;
+	margin: auto;
+}
+
+.line-container {
+	position: relative;
+	width: 100%;
+	text-align: center;
+	margin-top: 20px; /* Adjust the margin top as needed */
+}
+
+.line {
+	border-top: 1px solid #000; /* Change color and thickness as needed */
+	width: 100%;
+}
+
+/* Style for the text */
+.line-text {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: #fff; /* Match background color of your page */
+	padding: 0 10px; /* Adjust padding as needed */
+}
+
+.register {
+	margin-top: 20px;
+}
+
+#returnLogin {
+	margin-top: 20px;
+}
+</style>
+
 
 <title>Welcome Page</title>
 </head>

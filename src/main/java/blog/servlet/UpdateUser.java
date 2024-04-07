@@ -2,6 +2,7 @@ package blog.servlet;
 
 import blog.dal.*;
 import blog.model.*;
+import blog.util.SessionUtil;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -15,8 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-@WebServlet("/userupdate")
-public class UserUpdate extends HttpServlet {
+@SuppressWarnings("serial")
+@WebServlet("/update_user")
+public class UpdateUser extends HttpServlet {
 	
 	protected UsersDao usersDao;
 	
@@ -28,6 +30,12 @@ public class UserUpdate extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		String username = SessionUtil.getUsername(req, resp);
+		
+		if (username == null) {
+			return;
+		}
+		
 		// Map for storing messages.
         Map<String, String> messages = new HashMap<String, String>();
         req.setAttribute("messages", messages);
