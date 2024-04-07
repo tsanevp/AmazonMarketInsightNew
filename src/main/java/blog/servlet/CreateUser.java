@@ -19,8 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet("/UserCreate")
-public class UserCreate extends HttpServlet {
+@WebServlet("/create_user")
+public class CreateUser extends HttpServlet {
 
     protected UsersDao usersDao;
 
@@ -35,7 +35,7 @@ public class UserCreate extends HttpServlet {
         Map<String, String> messages = new HashMap<>();
         req.setAttribute("messages", messages);
         // Just render the JSP.
-        req.getRequestDispatcher("/UserCreate.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/jsp/CreateUser.jsp").forward(req, resp);
     }
 
     @Override
@@ -74,12 +74,12 @@ public class UserCreate extends HttpServlet {
             } catch (SQLException e) {
                 e.printStackTrace();
                 messages.put("success", "Error creating " + userName);
-                req.getRequestDispatcher("/UserCreate.jsp").forward(req, resp);
+                req.getRequestDispatcher("/WEB-INF/jsp/CreateUser.jsp").forward(req, resp);
                 return;
             }
         }
 
         // Forward to JSP for rendering.
-        req.getRequestDispatcher("/UserCreate.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/jsp/CreateUser.jsp").forward(req, resp);
     }
 }
