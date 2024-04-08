@@ -43,28 +43,21 @@ public class UpdateUser extends HttpServlet {
 			return;
 		}
 
-		// Map for storing messages.
-		Map<String, String> messages = new HashMap<>();
-		req.setAttribute("messages", messages);
-
-		// Retrieve user and validate.
-		String userName = req.getParameter("username");
-		if (userName == null || userName.trim().isEmpty()) {
-			messages.put("success", "Please enter a valid UserName.");
-		} else {
-			try {
-				Users blogUser = usersDao.getUserFromUserName(userName);
-				if (blogUser == null) {
-					messages.put("success", "UserName does not exist.");
-				}
-				req.setAttribute("blogUser", blogUser);
-			} catch (SQLException e) {
-				e.printStackTrace();
-				throw new IOException(e);
-			}
-		}
-
-		req.getRequestDispatcher("/UserUpdate.jsp").forward(req, resp);
+		/*
+		 * // Map for storing messages. Map<String, String> messages = new HashMap<>();
+		 * req.setAttribute("messages", messages);
+		 * 
+		 * // Retrieve user and validate. String userName =
+		 * req.getParameter("username"); if (userName == null ||
+		 * userName.trim().isEmpty()) { messages.put("success",
+		 * "Please enter a valid UserName."); } else { try { Users blogUser =
+		 * usersDao.getUserFromUserName(userName); if (blogUser == null) {
+		 * messages.put("success", "UserName does not exist."); }
+		 * req.setAttribute("blogUser", blogUser); } catch (SQLException e) {
+		 * e.printStackTrace(); throw new IOException(e); } }
+		 * 
+		 * req.getRequestDispatcher("/UserUpdate.jsp").forward(req, resp);
+		 */
 	}
 
 	@Override
@@ -86,6 +79,7 @@ public class UpdateUser extends HttpServlet {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			messages.put("error", "UserName does not exist. No update to perform.");
+			req.setAttribute("user", user);
 			req.getRequestDispatcher("/WEB-INF/jsp/UserProfile.jsp").forward(req, resp);
 			return;
 		}
@@ -101,13 +95,18 @@ public class UpdateUser extends HttpServlet {
 		String stringDob = req.getParameter("dob");
 		Date dob = new Date();
 
-		try {
-			dob = dateFormat.parse(stringDob);
-		} catch (ParseException e) {
-			e.printStackTrace();
-			messages.put("error", "Invalid DoB provided.");
-			req.getRequestDispatcher("/WEB-INF/jsp/UserProfile.jsp").forward(req, resp);
-			return;
+		if (stringDob == null || stringDob.isEmpty()) {
+			dob = user.getDob();
+		} else {
+			try {
+				dob = dateFormat.parse(stringDob);
+			} catch (ParseException e) {
+				e.printStackTrace();
+				messages.put("error", "Invalid DoB provided.");
+				req.setAttribute("user", user);
+				req.getRequestDispatcher("/WEB-INF/jsp/UserProfile.jsp").forward(req, resp);
+				return;
+			}
 		}
 
 		// Verify the user actually updated a value
@@ -115,6 +114,7 @@ public class UpdateUser extends HttpServlet {
 				&& user.getEmail().equals(email) && user.getPhoneNumber().equals(phoneNumber)
 				&& user.getDob().equals(dob)) {
 			messages.put("error", "No user information was updated. Update not processed.");
+			req.setAttribute("user", user);
 			req.getRequestDispatcher("/WEB-INF/jsp/UserProfile.jsp").forward(req, resp);
 			return;
 		}
@@ -133,6 +133,7 @@ public class UpdateUser extends HttpServlet {
 			return;
 
 		messages.put("success", "Successfully updated " + username);
+		req.setAttribute("user", user);
 		req.getRequestDispatcher("/WEB-INF/jsp/UserProfile.jsp").forward(req, resp);
 	}
 
@@ -161,6 +162,7 @@ public class UpdateUser extends HttpServlet {
 
 			if (user == null) {
 				messages.put("error", "An error occurred while updating your info. Update not processed.");
+				req.setAttribute("user", user);
 				req.getRequestDispatcher("/WEB-INF/jsp/UserProfile.jsp").forward(req, resp);
 				return false;
 			}
@@ -168,6 +170,7 @@ public class UpdateUser extends HttpServlet {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			messages.put("error", "An error occurred while updating your info. Update not processed.");
+			req.setAttribute("user", user);
 			req.getRequestDispatcher("/WEB-INF/jsp/UserProfile.jsp").forward(req, resp);
 			return false;
 		}

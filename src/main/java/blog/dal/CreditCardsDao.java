@@ -122,7 +122,7 @@ public class CreditCardsDao {
 			selectStmt.setString(1, userName);
 			results = selectStmt.executeQuery();
 			while (results.next()) {
-				int cardNumber = results.getInt("CardNumber");
+				long cardNumber = results.getLong("CardNumber");
 				Date expiration = new Date(results.getTimestamp("Expiration").getTime());
 				String resultsUserName = results.getString("UserName");
 

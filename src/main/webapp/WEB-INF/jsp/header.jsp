@@ -34,7 +34,7 @@
                 </a>
                 <ul class="dropdown-menu text-small" style="">
                     <li><a class="dropdown-item" href="#">New project...</a></li>
-                    <li><a class="dropdown-item" href="subscribe">Subscribe</a></li>
+                    <li><a class="dropdown-item" href="manage_subscription">Subscribe</a></li>
                     <li><a class="dropdown-item" href="my_profile">Profile</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="logout">Sign out</a></li>

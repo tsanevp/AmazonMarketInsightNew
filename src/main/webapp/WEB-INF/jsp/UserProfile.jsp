@@ -94,8 +94,8 @@
 			</div>
 			<div class="col-md-6 update-info">
 				<h3>Update Information</h3>
-				<form action="update_user" method="post">		    
-			        <!-- Input fields for updated information -->    
+				<form action="update_user" method="post">
+					<!-- Input fields for updated information -->
 					<div class="form-group">
 						<label for="firstName">First Name</label> <input type="text"
 							class="form-control" id="firstName" name="firstName"
@@ -125,6 +125,12 @@
 							right after updating this information</label>
 					</div>
 					<button type="submit" class="btn btn-primary">Update</button>
+					<p>
+						<span id="successMessage"><b>${messages.success}</b></span>
+					</p>
+					<p>
+						<span id="successMessage"><b>${messages.error}</b></span>
+					</p>
 				</form>
 			</div>
 		</div>
