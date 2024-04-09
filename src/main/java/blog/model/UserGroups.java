@@ -14,6 +14,12 @@ public class UserGroups {
 		this.created = created;
 		this.categoryId = categoryId;
 	}
+	
+	public UserGroups(String groupName, int categoryId) {
+		this.groupName = groupName;
+		this.created = new Date();
+		this.categoryId = categoryId;
+	}
 
 	public int getGroupId() {
 		return groupId;

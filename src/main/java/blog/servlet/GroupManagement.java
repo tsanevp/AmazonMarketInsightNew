@@ -42,26 +42,68 @@ public class GroupManagement extends HttpServlet {
 		Map<String, String> messages = new HashMap<String, String>();
 		req.setAttribute("messages", messages);
 
+		String groupIdStr = req.getParameter("groupId");
+		String groupStatus = req.getParameter("groupStatus");
+		
+		boolean invalidGroupStatus = (groupStatus == null || groupStatus.trim().isEmpty());
+		
+		if ((groupIdStr == null || groupIdStr.trim().isEmpty()) && invalidGroupStatus) {
+			// error req
+			return;
+		}
+		
+		
 		int groupId = -1;
         
 		try {
-			groupId = Integer.parseInt(req.getParameter("groupId"));
-			System.out.println("afasdf");
-			// After successfully adding the user to the group, return a response
-			groupMembersDao.create(new GroupMembers(groupId, username));
+			groupId = Integer.parseInt(groupIdStr);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			// Add error since there was an issue retrieving group id
+			return;
+		}
+
+		if (groupId != -1 && invalidGroupStatus) {
+			// req is to view a single group
+			try {
+				UserGroups group = userGroupsDao.getUserGroupById(groupId);
+				List<GroupMembers> members = groupMembersDao.getAllMembersByGroupId(groupId);
+				
+				boolean isMember = false;
+				for (GroupMembers member : members) {
+					if (member.getUserName().equals(username)) {
+						isMember = true;
+						break;
+					}
+				}
+				req.setAttribute("isMember", isMember);
+				req.setAttribute("group", group);
+				req.setAttribute("members", members);
+				req.getRequestDispatcher("/WEB-INF/jsp/ViewGroup.jsp").forward(req, resp);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			return;
+		}
+		
+		try {
+			// After successfully adding or deleting the user, return a response
+			if (groupStatus.equals("joining")) {
+				groupMembersDao.create(new GroupMembers(groupId, username));
+			} else {
+				groupMembersDao.delete(new GroupMembers(groupId, username));
+			}
+			
 	        resp.setContentType("text/plain");
 	        resp.getWriter().write("User successfully joined the group.");
 	        return;
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		if (groupId != -1) {
-
-		}
+		
 		
 		List<UserGroups> userGroups = new ArrayList<>();
 
@@ -109,26 +151,68 @@ public class GroupManagement extends HttpServlet {
 		Map<String, String> messages = new HashMap<String, String>();
 		req.setAttribute("messages", messages);
 
+		String groupIdStr = req.getParameter("groupId");
+		String groupStatus = req.getParameter("groupStatus");
+		
+		boolean invalidGroupStatus = (groupStatus == null || groupStatus.trim().isEmpty());
+		
+		if ((groupIdStr == null || groupIdStr.trim().isEmpty()) && invalidGroupStatus) {
+			// error req
+			return;
+		}
+		
+		
 		int groupId = -1;
         
 		try {
-			groupId = Integer.parseInt(req.getParameter("groupId"));
-			System.out.println("afasdf");
-			// After successfully adding the user to the group, return a response
-			groupMembersDao.create(new GroupMembers(groupId, username));
+			groupId = Integer.parseInt(groupIdStr);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			// Add error since there was an issue retrieving group id
+			return;
+		}
+
+		if (groupId != -1 && invalidGroupStatus) {
+			// req is to view a single group
+			try {
+				UserGroups group = userGroupsDao.getUserGroupById(groupId);
+				List<GroupMembers> members = groupMembersDao.getAllMembersByGroupId(groupId);
+				
+				boolean isMember = false;
+				for (GroupMembers member : members) {
+					if (member.getUserName().equals(username)) {
+						isMember = true;
+						break;
+					}
+				}
+				req.setAttribute("isMember", isMember);
+				req.setAttribute("group", group);
+				req.setAttribute("members", members);
+				req.getRequestDispatcher("/WEB-INF/jsp/ViewGroup.jsp").forward(req, resp);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			return;
+		}
+		
+		try {
+			// After successfully adding or deleting the user, return a response
+			if (groupStatus.equals("joining")) {
+				groupMembersDao.create(new GroupMembers(groupId, username));
+			} else {
+				groupMembersDao.delete(new GroupMembers(groupId, username));
+			}
+			
 	        resp.setContentType("text/plain");
 	        resp.getWriter().write("User successfully joined the group.");
 	        return;
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		if (groupId != -1) {
-
-		}
+		
 		
 		List<UserGroups> userGroups = new ArrayList<>();
 

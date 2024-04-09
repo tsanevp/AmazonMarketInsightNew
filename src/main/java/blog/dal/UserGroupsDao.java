@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,18 +29,29 @@ public class UserGroupsDao {
 	}
 
 	public UserGroups create(UserGroups userGroup) throws SQLException {
-		String insertUserGroup = "INSERT INTO UserGroups(GroupId,GroupName,Created,CategoryId) VALUES(?,?,?,?);";
+		String insertUserGroup = "INSERT INTO UserGroups(GroupName,Created,CategoryId) VALUES(?,?,?);";
 		Connection connection = null;
 		PreparedStatement insertStmt = null;
+		ResultSet resultKey = null;
 		try {
 			connection = connectionManager.getConnection();
-			insertStmt = connection.prepareStatement(insertUserGroup);
-			insertStmt.setInt(1, userGroup.getGroupId());
-			insertStmt.setString(2, userGroup.getGroupName());
-			insertStmt.setTimestamp(3, new Timestamp(userGroup.getCreated().getTime()));
-			insertStmt.setInt(4, userGroup.getCategoryId());
-
+			insertStmt = connection.prepareStatement(insertUserGroup, Statement.RETURN_GENERATED_KEYS);
+			insertStmt.setString(1, userGroup.getGroupName());
+			insertStmt.setTimestamp(2, new Timestamp(userGroup.getCreated().getTime()));
+			insertStmt.setInt(3, userGroup.getCategoryId());
 			insertStmt.executeUpdate();
+			
+			// Retrieve the auto-generated key and set it, so it can be used by the caller.
+			resultKey = insertStmt.getGeneratedKeys();
+			int groupId = -1;
+			
+			if(resultKey.next()) {
+				groupId = resultKey.getInt(1);
+			} else {
+				throw new SQLException("Unable to retrieve auto-generated key.");
+			}
+			
+			userGroup.setGroupId(groupId);
 			return userGroup;
 		} catch (SQLException e) {
 			e.printStackTrace();

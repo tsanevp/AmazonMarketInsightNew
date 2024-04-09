@@ -76,7 +76,6 @@ public class AllGroups extends HttpServlet {
 				}
 			} 
 			req.setAttribute("" + groupId, isMember);
-			System.out.println("" + groupId + "..." +isMember);
 			
 			usersInGroups.put(groupId, groupMemebrs);
 		}
