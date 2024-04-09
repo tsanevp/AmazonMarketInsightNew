@@ -7,7 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class GroupMembersDao {
 	protected ConnectionManager connectionManager;
@@ -87,6 +89,44 @@ public class GroupMembersDao {
 			}
 		}
 		return null;
+	}
+	
+	public List<GroupMembers> getAllMembersByGroupId(int groupId) throws SQLException {
+		List<GroupMembers> groupMembers = new ArrayList<>();
+		
+		String selectGroupMembers = "SELECT * FROM GroupMembers WHERE GroupId=?;";
+		Connection connection = null;
+		PreparedStatement selectStmt = null;
+		ResultSet results = null;
+		try {
+			connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(selectGroupMembers);
+			selectStmt.setInt(1, groupId);
+			results = selectStmt.executeQuery();
+			while (results.next()) {
+				int resultGroupId = results.getInt("GroupId");
+				String userName = results.getString("UserName");
+				String role = results.getString("Role");
+				Date joinDate = new Date(results.getTimestamp("JoinDate").getTime());
+
+				groupMembers.add(new GroupMembers(resultGroupId, userName, GroupMembers.Roles.valueOf(role.toUpperCase()),
+						joinDate));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
+			if (selectStmt != null) {
+				selectStmt.close();
+			}
+			if (results != null) {
+				results.close();
+			}
+		}
+		return groupMembers;
 	}
 
 	public GroupMembers updateRole(GroupMembers groupMember, GroupMembers.Roles newRole) throws SQLException {

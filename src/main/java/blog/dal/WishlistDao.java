@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Data access object (DAO) class to interact with the underlying Wishlist table
@@ -95,6 +97,46 @@ public class WishlistDao {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Get the Wishlist record by fetching it from your MySQL instance. This runs a
+	 * SELECT statement and returns a single Wishlist instance.
+	 */
+	public List<Wishlist> getWishlistFromUserName(String userName) throws SQLException {
+		List<Wishlist> wishlistItems = new ArrayList<Wishlist>();
+		String selectWishlist = "SELECT WishListId,UserName,ProductId FROM Wishlist WHERE UserName=?;";
+		Connection connection = null;
+		PreparedStatement selectStmt = null;
+		ResultSet results = null;
+		try {
+			connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(selectWishlist);
+			selectStmt.setString(1, userName);
+			results = selectStmt.executeQuery();
+			while (results.next()) {
+				int wishlistId = results.getInt("WishListId");
+				String resultsUserName = results.getString("UserName");
+				String productId = results.getString("ProductId");
+
+				wishlistItems.add(new Wishlist(wishlistId, resultsUserName, productId));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
+			if (selectStmt != null) {
+				selectStmt.close();
+			}
+			if (results != null) {
+				results.close();
+			}
+		}
+		
+		return wishlistItems;
 	}
 
 	/**

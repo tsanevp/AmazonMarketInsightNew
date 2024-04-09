@@ -66,8 +66,64 @@
 		<li><a href="PostComments.jsp">Post Comments</a></li>
 	</ul>
 	 -->
+
+	<!-- Error message modal -->
+	<div class="modal fade" id="errorModal" tabindex="-1" role="dialog"
+		aria-labelledby="errorModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close" onclick="closeErrorModal()">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<!-- Display the error message here -->
+					<p id="errorMessage">There was an error.</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						onclick="closeErrorModal()">OK</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- jQuery and Bootstrap JavaScript -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-		type="text/javascript"></script>
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+	<script type="text/javascript">
+		// Function to show the error modal with a specific message
+		function showErrorModal(message) {
+			// Update the error message in the modal
+			document.getElementById('errorMessage').textContent = message;
+			// Show the modal using jQuery
+			$('#errorModal').modal('show');
+		}
+
+		// Function to close the error modal
+		function closeErrorModal() {
+			$('#errorModal').modal('hide');
+			
+	        history.replaceState(null, null, 'home_page');
+		}
+
+		// Function to check if there's an error message in the URL and display it
+		function checkForErrorMessage() {
+			var urlParams = new URLSearchParams(window.location.search);
+			var errorMessage = urlParams.get('error');
+			if (errorMessage) {
+				showErrorModal(errorMessage);
+			}
+		}
+
+		// Call the function to check for error message when the page loads
+		window.onload = function() {
+			checkForErrorMessage();
+		};
+	</script>
 </body>
 </html>

@@ -2,91 +2,258 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Post</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<style type="text/css">
+/* Custom CSS styling */
+.post-container {
+	margin-top: 50px;
+}
+
+.post-card {
+	padding: 20px;
+	margin-bottom: 20px;
+}
+
+.post-info, .comment-info {
+	font-size: 12px;
+	color: #6c757d;
+}
+
+.interaction-buttons {
+	margin-top: 10px;
+}
+
+.comment-container {
+	margin-top: 20px;
+}
+
+.add-comment-button, .post_comment {
+	margin-top: 20px;
+	margin-bottom: 30px;
+}
+
+.similar-products-container {
+	margin-bottom: 50px;
+}
+
+/* Set fixed height for carousel controls */
+.carousel-control-prev, .carousel-control-next {
+	width: 10%;
+}
+
+/* Center carousel controls vertically */
+.carousel-control-prev {
+	top: 50%;
+	transform: translateX(-75%);
+}
+
+/* Center carousel controls vertically */
+.carousel-control-next {
+	top: 50%;
+	transform: translateX(75%);
+}
+
+/* Set fixed height for cards */
+.card {
+	height: 100%;
+}
+
+/* Set fixed height for card body */
+.card-body {
+	height: 100%;
+}
+</style>
 </head>
 <body>
-	<h1>Post</h1>
-	<table border="1">
-		<tr>
-			<th>PostId</th>
-			<th>Created</th>
-			<th>Review</th>
-			<th>Rating</th>
-			<th>NumInteractions</th>
-			<th>Active</th>
-			<th>UpVotes</th>
-			<th>DownVotes</th>
-			<th>Shares</th>
-			<th>UserName</th>
-			<th>ProductId</th>
-			<th>Comments</th>
-			<th>Delete BlogPost</th>
-		</tr>
-		<c:forEach items="${posts}" var="posts">
-			<tr>
-				<td><c:out value="${posts.getPostId()}" /></td>
-				<td><c:out value="${posts.getCreated()}" /></td>
-				<td><c:out value="${posts.getReview()}" /></td>
-				<td><c:out value="${posts.getRating()}" /></td>
-				<td><c:out value="${posts.getNumInteractions()}" /></td>
-				<td><c:out value="${posts.isActive()}" /></td>
-				<td><c:out value="${posts.getUpVotes()}" /></td>
-				<td><c:out value="${posts.getDownVotes()}" /></td>
-				<td><c:out value="${posts.getShares()}" /></td>
-				<td><c:out value="${posts.getUserName()}" /></td>
-				<td><c:out value="${posts.getProductId()}" /></td>
-				<td><a
-					href="comments?postid=<c:out value="${posts.getPostId()}"/>">Comments</a></td>
-				<td><a
-					href="deletepost?postid=<c:out value="${posts.getPostId()}"/>">Delete</a></td>
-			</tr>
-		</c:forEach>
-	</table>
+	<jsp:include page="Header.jsp" />
 
-	<h1>Similar Products</h1>
-	<table border="1">
-		<tr>
-			<th>ProductId</th>
-			<th>Title</th>
-			<th>ImageUrl</th>
-			<th>ProductUrl</th>
-			<th>Stars</th>
-			<th>Reviews</th>
-			<th>Price</th>
-			<th>ListedPrice</th>
-			<th>CategoryId</th>
-			<th>BestSeller</th>
-			<th>BoughtInLastMonth</th>
-			<th>TimesPosted</th>
-			<th>NumViews</th>
-			<th>Likes</th>
-			<th>Dislikes</th>
-		</tr>
-		<c:forEach items="${products}" var="products">
-			<tr>
-				<td><c:out value="${products.getProductId()}" /></td>
-				<td><c:out value="${products.getTitle()}" /></td>
-				<td><c:out value="${products.getImageUrl()}" /></td>
-				<td><c:out value="${products.getProductUrl()}" /></td>
-				<td><c:out value="${products.getStars()}" /></td>
-				<td><c:out value="${products.getReviews()}" /></td>
-				<td><c:out value="${products.getPrice()}" /></td>
-				<td><c:out value="${products.getListedPrice()}" /></td>
-				<td><c:out value="${products.getCategoryId()}" /></td>
-				<td><c:out value="${products.isBestSeller()}" /></td>
-				<td><c:out value="${products.getBoughtInLastMonth()}" /></td>
-				<td><c:out value="${products.getTimesPosted()}" /></td>
-				<td><c:out value="${products.getNumViews()}" /></td>
-				<td><c:out value="${products.getLikes()}" /></td>
-				<td><c:out value="${products.getDislikes()}" /></td>
-			</tr>
-		</c:forEach>
-	</table>
+	<div class="container post-container">
+		<div class="card post-card">
+			<div class="card-body">
+				<h1>${post.getReview()}</h1>
+				<p>User: ${post.getUserName()}</p>
+				<p>
+					Posted on:
+					<fmt:formatDate value="${post.getCreated()}"
+						pattern="MM/dd/yyyy HH:mm a" />
+				</p>
+				<p>Rating: ${post.getRating()}</p>
+				<p>Total Interactions: ${post.getNumInteractions()}</p>
+				<p>Active: ${post.isActive()}</p>
+				<div class="interaction-info">
+					<span class="post-info">Up Votes: ${post.getUpVotes()}</span> <span
+						class="post-info">Down Votes: ${post.getDownVotes()}</span> <span
+						class="post-info">Shares: ${post.getShares()}</span> <span
+						class="post-info">Number Comments: ${fn:length(comments)}</span> <span
+						class="post-info">PostId: ${post.getPostId()}</span>
+
+				</div>
+				<div class="interaction-buttons">
+					<!-- Like Button -->
+					<button class="btn btn-primary" onclick="likePost()">Like</button>
+					<!-- Dislike Button -->
+					<button class="btn btn-danger" onclick="dislikePost()">Dislike</button>
+					<!-- Share Button -->
+					<button class="btn btn-success" onclick="sharePost()">Share</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Comments Section -->
+		<div class="row comment-container">
+			<div class="col">
+				<h2>Comments</h2>
+				<c:choose>
+					<c:when test="${empty comments}">
+						<p>No comments yet.</p>
+					</c:when>
+					<c:otherwise>
+						<c:forEach items="${comments}" var="comment">
+							<div class="card">
+								<div class="card-body">
+									<p>${comment.getComment()}</p>
+									<p>User: ${comment.getUserName()}</p>
+									<p>
+										Posted on:
+										<fmt:formatDate value="${comment.getCreated()}"
+											pattern="MM/dd/yyyy HH:mm a" />
+									</p>
+									<!-- Display upVotes and downVotes -->	
+									<div class="interaction-info">
+										<span class="comment-info">Up Votes: ${comment.getUpVotes()}</span>
+										<span class="comment-info">Down Votes:
+											${comment.getDownVotes()}</span> 
+											<span class="comment-info">CommentId:
+											${comment.getPostCommentId()}</span>
+
+									</div>
+								</div>
+							</div>
+						</c:forEach>
+					</c:otherwise>
+				</c:choose>
+
+				<!-- Add New Comment form -->
+				<div class="post_comment" style="display: none;">
+					<h3>Add a Comment</h3>
+					<form action="post_comment" method="post">
+						<input type="hidden" name="postId" value="${post.getPostId()}">
+						<div class="mb-3">
+							<label for="commentContent" class="form-label">Comment:</label>
+							<textarea class="form-control" id="commentContent"
+								name="commentContent" rows="3" cols=""></textarea>
+						</div>
+						<button type="submit" class="btn btn-primary">Submit</button>
+						<button type="button" class="btn btn-secondary"
+							onclick="cancelComment()">Cancel</button>
+					</form>
+				</div>
+
+				<!-- Button to toggle Add New Comment form -->
+				<button class="btn btn-primary add-comment-button"
+					onclick="toggleAddCommentForm()">Add Comment</button>
+			</div>
+		</div>
+
+		<!-- Similar Products Section -->
+		<div class="row similar-products-container">
+			<div class="col similar-col">
+				<h2>Similar Products</h2>
+				<c:choose>
+					<c:when test="${empty similarProducts}">
+					No similar products.
+					</c:when>
+					<c:otherwise>
+						<!-- Carousel markup -->
+						<div id="similarProductsCarousel" class="carousel slide"
+							data-bs-ride="carousel">
+							<div class="carousel-inner">
+								<!-- Iterate through similar products -->
+								<c:forEach items="${similarProducts}" var="product"
+									varStatus="loop">
+									<!-- Check if it's the first item to mark it as active -->
+									<c:set var="active" value="${loop.first ? 'active' : ''}" />
+									<div class="carousel-item ${active}">
+										<div class="row">
+											<!-- Display three cards per slide -->
+											<c:forEach begin="${loop.index}" end="${loop.index + 2}"
+												items="${similarProducts}" var="product">
+												<div class="col">
+													<div class="card h-100">
+														<!-- Set fixed height for the card -->
+														<div class="card-body">
+															<h5 class="card-title">${product.getTitle()}</h5>
+															<p class="card-text">Product ID:
+																${product.getProductId()}</p>
+															<p class="card-text">Image URL:
+																${product.getImageUrl()}</p>
+															<p class="card-text">Product URL:
+																${product.getProductUrl()}</p>
+															<p class="card-text">Stars: ${product.getStars()}</p>
+															<p class="card-text">Reviews: ${product.getReviews()}</p>
+															<!-- Add more product details as needed -->
+														</div>
+													</div>
+												</div>
+											</c:forEach>
+										</div>
+									</div>
+								</c:forEach>
+							</div>
+							<!-- Carousel controls -->
+
+							<button class="carousel-control-prev" type="button"
+								data-bs-target="#similarProductsCarousel" data-bs-slide="prev">
+								<span class="carousel-control-prev-icon bg-dark"
+									aria-hidden="true"></span>
+								<!-- Change arrow color -->
+								<span class="visually-hidden">Previous</span>
+							</button>
+							<button class="carousel-control-next" type="button"
+								data-bs-target="#similarProductsCarousel" data-bs-slide="next">
+								<span class="carousel-control-next-icon bg-dark"
+									aria-hidden="true"></span>
+								<!-- Change arrow color -->
+								<span class="visually-hidden">Next</span>
+							</button>
+						</div>
+
+					</c:otherwise>
+				</c:choose>
+			</div>
+		</div>
+	</div>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+		type="text/javascript"></script>
+
+	<script type="text/javascript">
+		function toggleAddCommentForm() {
+			var addCommentForm = document.querySelector('.post_comment');
+			var addCommentButton = document
+					.querySelector('.add-comment-button');
+			if (addCommentForm.style.display === 'none') {
+				addCommentForm.style.display = 'block';
+				addCommentButton.style.display = 'none'; // Hide the "Add Comment" button
+			}
+		}
+
+		function cancelComment() {
+			var addCommentForm = document.querySelector('.post_comment');
+			var addCommentButton = document
+					.querySelector('.add-comment-button');
+			addCommentForm.style.display = 'none'; // Hide the form
+			addCommentButton.style.display = 'block'; // Show the "Add Comment" button
+		}
+	</script>
 </body>
 </html>

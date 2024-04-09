@@ -22,6 +22,19 @@ public class PostComments {
 		this.postId = postId;
 	}
 
+	public PostComments(int postCommentId) {
+		this.postCommentId = postCommentId;
+	}
+	
+	public PostComments(String comment, String userName, int postId) {
+		this.created = new Date();
+		this.comment = comment;
+		this.upVotes = 0;
+		this.downVotes = 0;
+		this.userName = userName;
+		this.postId = postId;
+	}
+	
 	public int getPostCommentId() {
 		return postCommentId;
 	}

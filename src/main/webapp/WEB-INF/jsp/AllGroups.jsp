@@ -27,24 +27,21 @@
 					<div class="card h-100">
 						<div class="card-body">
 							<h5 class="card-title">${group.groupName}</h5>
-							<p class="card-text">
-								Created:
-								<fmt:formatDate value="${group.created}" pattern="dd/MM/yyyy" />
-							</p>
 							<p class="card-text">Group ID: ${group.groupId}</p>
 							<p class="card-text">Category ID: ${group.categoryId}</p>
-							<p class="card-text">Member Count: ${group.members.length}</p>
+							<p class="card-text">Member Count:
+								${fn:length(usersInGroups[group.groupId])}</p>
 							<!-- Show members button -->
-							<button class="btn btn-info btn-sm"
-								onclick="showMembers(${group.groupId})">Show Members</button>
+							<a href="/view_group?groupId=${group.groupId}"
+								class="btn btn-info btn-sm">Show Members</a>
 							<!-- Check if the user is already in the group -->
-							<c:if test="${fn:length(group.members) > 0}">
+							<c:if test="${fn:length(usersInGroups[group.groupId]) > 0}">
 								<!-- If the user is in the group, show the leave button -->
 								<button class="btn btn-danger btn-sm leave-btn"
 									onclick="leaveGroup(${group.groupId})">Leave</button>
 							</c:if>
 							<!-- If the user is not in the group, show the join button -->
-							<c:if test="${fn:length(group.members) == 0}">
+							<c:if test="${fn:length(usersInGroups[group.groupId]) == 0}">
 								<button class="btn btn-primary btn-sm join-btn"
 									onclick="joinGroup(${group.groupId})">Join</button>
 							</c:if>
@@ -72,12 +69,6 @@
         
         // For demonstration purposes, let's just reload the page after leaving
         location.reload();
-    }
-
-    // Function to show members of the group
-    function showMembers(groupId) {
-        // Redirect to view_group page with groupId parameter
-        window.location.href = "/view_group?groupId=" + groupId;
     }
 </script>
 

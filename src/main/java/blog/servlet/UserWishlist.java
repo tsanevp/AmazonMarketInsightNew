@@ -18,16 +18,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet("/my_posts")
-public class UserPosts extends HttpServlet {
+@WebServlet("/my_wishlist")
+public class UserWishlist extends HttpServlet {
 
 	protected UsersDao usersDao;
-	protected PostsDao postsDao;
+	protected WishlistDao wishlistDao;
 
 	@Override
 	public void init() throws ServletException {
 		usersDao = UsersDao.getInstance();
-		postsDao = PostsDao.getInstance();
+		wishlistDao = WishlistDao.getInstance();
 	}
 
 	@Override
@@ -43,20 +43,20 @@ public class UserPosts extends HttpServlet {
 		req.setAttribute("messages", messages);
 
 		Users user = null;
-		List<Posts> posts = new ArrayList<>();
+		List<Wishlist> wishlistItems = new ArrayList<>();
 
 		try {
 			user = usersDao.getUserFromUserName(username);
-			posts = postsDao.getPostsFromUserName(username);
+			wishlistItems = wishlistDao.getWishlistFromUserName(username);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new IOException(e);
 		}
 
 		req.setAttribute("user", user);
-		req.setAttribute("posts", posts);
+		req.setAttribute("wishlistItems", wishlistItems);
 
 		// Just render the JSP.
-		req.getRequestDispatcher("/WEB-INF/jsp/UserPosts.jsp").forward(req, resp);
+		req.getRequestDispatcher("/WEB-INF/jsp/WishList.jsp").forward(req, resp);
 	}
 }
