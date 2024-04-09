@@ -35,15 +35,29 @@
 							<a href="/view_group?groupId=${group.groupId}"
 								class="btn btn-info btn-sm">Show Members</a>
 							<!-- Check if the user is already in the group -->
-							<c:if test="${fn:length(usersInGroups[group.groupId]) > 0}">
+<%-- 							<c:if --%>
+<%-- 								test="${fn:contains(usersInGroups[group.groupId], username)}"> --%>
+<!-- 								If the user is in the group, show the leave button -->
+<!-- 								<button class="btn btn-danger btn-sm leave-btn" -->
+<%-- 									onclick="leaveGroup(${group.groupId})">Leave</button> --%>
+<%-- 							</c:if> --%>
+<!-- 							If the user is not in the group, show the join button -->
+<%-- 							<c:if --%>
+<%-- 								test="${not fn:contains(usersInGroups[group.groupId], username)}"> --%>
+<!-- 								<button class="btn btn-primary btn-sm join-btn" -->
+<%-- 									onclick="joinGroup(${group.groupId})">Join</button> --%>
+<%-- 							</c:if> --%>
+
+							<!-- Check if the current user is a member of the group -->
+							<c:if test="${requestScope[groupIdToString[group.groupId]]}">
 								<!-- If the user is in the group, show the leave button -->
 								<button class="btn btn-danger btn-sm leave-btn"
 									onclick="leaveGroup(${group.groupId})">Leave</button>
 							</c:if>
 							<!-- If the user is not in the group, show the join button -->
-							<c:if test="${fn:length(usersInGroups[group.groupId]) == 0}">
+							<c:if test="${not requestScope[groupIdToString[group.groupId]]}">
 								<button class="btn btn-primary btn-sm join-btn"
-									onclick="joinGroup(${group.groupId})">Join</button>
+									onclick="joinGroup(${group.groupId}, ${requestScope[groupIdToString[group.groupId]]})">Join</button>
 							</c:if>
 						</div>
 					</div>
@@ -52,15 +66,32 @@
 		</div>
 	</div>
 
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+		type="text/javascript"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
 	<script type="text/javascript">
     // JavaScript function to handle joining a group
-    function joinGroup(groupId) {
-        // Add logic to join the group
-        // You can use AJAX to send a request to the server to join the group
-        
-        // For demonstration purposes, let's just reload the page after joining
-        location.reload();
-    }
+	 function joinGroup(groupId, bool) {
+	    console.log("Joining group with ID: " + groupId + "..." + bool);
+
+	    $.ajax({
+	        type: "POST",
+	        url: "view_group",
+	        data: { groupId: groupId },
+	        success: function(response) {
+	            // Reload the page after successfully joining the group
+	            location.reload();
+	        },
+	        error: function(xhr, status, error) {
+	            // Handle error if joining the group fails
+	            console.error(error);
+	            // Display an error message or perform any other action as needed
+	        }
+	    });
+	}
 
     // JavaScript function to handle leaving a group
     function leaveGroup(groupId) {
@@ -70,10 +101,6 @@
         // For demonstration purposes, let's just reload the page after leaving
         location.reload();
     }
-</script>
-
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-		type="text/javascript"></script>
+	</script>
 </body>
 </html>
