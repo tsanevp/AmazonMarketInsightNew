@@ -21,8 +21,8 @@
 				<ul
 					class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
 					<li><a href="home_page" class="nav-link px-2 link-secondary">Home</a></li>
-					<li><a href="#" class="nav-link px-2 link-body-emphasis">Products</a></li>
-					<li><a href="#" class="nav-link px-2 link-body-emphasis">Posts</a></li>
+					<li><a href="all_products" class="nav-link px-2 link-body-emphasis">Products</a></li>
+					<li><a href="all_posts" class="nav-link px-2 link-body-emphasis">Posts</a></li>
 					<li class="dropdown"><a href="#"
 						class="nav-link px-2 link-body-emphasis dropdown-toggle"
 						role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -31,7 +31,7 @@
 							<li><a class="dropdown-item" href="all_groups">All Groups</a></li>
 							<li><a class="dropdown-item" href="#">Joined Groups</a></li>
 							<li><a class="dropdown-item" href="#">My Groups</a></li>
-							<li><a class="dropdown-item" href="#">Create Group</a></li>
+							<li><a class="dropdown-item" href="create_group">Create Group</a></li>
 						</ul></li>
 				</ul>
 

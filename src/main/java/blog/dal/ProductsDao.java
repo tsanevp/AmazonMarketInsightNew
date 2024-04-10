@@ -195,6 +195,68 @@ public class ProductsDao {
 		return productList;
 	}
 
+	public List<Products> getAllProductsByPage(int offset, int pageSize) throws SQLException {
+	    List<Products> productList = new ArrayList<>();
+	    String selectAllProducts = "SELECT * FROM Products LIMIT ?, ?;";
+	    Connection connection = null;
+	    PreparedStatement selectStmt = null;
+	    ResultSet resultSet = null;
+	    try {
+	        connection = connectionManager.getConnection();
+	        selectStmt = connection.prepareStatement(selectAllProducts);
+	        selectStmt.setInt(1, offset);
+	        selectStmt.setInt(2, pageSize);
+	        resultSet = selectStmt.executeQuery();
+	        while (resultSet.next()) {
+	            Products product = parseProduct(resultSet);
+	            productList.add(product);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        throw e;
+	    } finally {
+	        if (connection != null) {
+	            connection.close();
+	        }
+	        if (selectStmt != null) {
+	            selectStmt.close();
+	        }
+	        if (resultSet != null) {
+	            resultSet.close();
+	        }
+	    }
+	    return productList;
+	}
+
+	public int getTotalProductsCount() throws SQLException {
+		String countQuery = "SELECT COUNT(*) AS total FROM Products;";
+		Connection connection = null;
+		PreparedStatement countStmt = null;
+		ResultSet resultSet = null;
+		try {
+			connection = connectionManager.getConnection();
+			countStmt = connection.prepareStatement(countQuery);
+			resultSet = countStmt.executeQuery();
+			if (resultSet.next()) {
+				return resultSet.getInt("total");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
+			if (countStmt != null) {
+				countStmt.close();
+			}
+			if (resultSet != null) {
+				resultSet.close();
+			}
+		}
+		return 0; // return 0 if no products found or any error occurs
+	}
+
 	public List<Products> getSimilarProductsToPost(int postId) throws SQLException {
 		List<Products> products = new ArrayList<Products>();
 

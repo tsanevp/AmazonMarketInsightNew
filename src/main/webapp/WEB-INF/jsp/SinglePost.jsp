@@ -98,9 +98,9 @@
 				</div>
 				<div class="interaction-buttons">
 					<!-- Like Button -->
-					<button class="btn btn-primary" onclick="likePost()">Like</button>
+					<button class="btn btn-primary" onclick="likePost(${post.postId})">Like</button>
 					<!-- Dislike Button -->
-					<button class="btn btn-danger" onclick="dislikePost()">Dislike</button>
+					<button class="btn btn-danger" onclick="dislikePost(${post.postId})">Dislike</button>
 					<!-- Share Button -->
 					<button class="btn btn-success" onclick="sharePost()">Share</button>
 				</div>
@@ -126,12 +126,11 @@
 										<fmt:formatDate value="${comment.getCreated()}"
 											pattern="MM/dd/yyyy HH:mm a" />
 									</p>
-									<!-- Display upVotes and downVotes -->	
+									<!-- Display upVotes and downVotes -->
 									<div class="interaction-info">
-										<span class="comment-info">Up Votes: ${comment.getUpVotes()}</span>
-										<span class="comment-info">Down Votes:
-											${comment.getDownVotes()}</span> 
-											<span class="comment-info">CommentId:
+										<span class="comment-info">Up Votes:
+											${comment.getUpVotes()}</span> <span class="comment-info">Down
+											Votes: ${comment.getDownVotes()}</span> <span class="comment-info">CommentId:
 											${comment.getPostCommentId()}</span>
 
 									</div>
@@ -235,8 +234,51 @@
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
 		type="text/javascript"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+		type="text/javascript"></script>
+
 
 	<script type="text/javascript">
+		function likePost(postId) {
+			$.ajax({
+				type : "POST",
+				url : "view_post",
+				data : {
+					postId : postId,
+					likeOrDislike : "like"
+				},
+				success : function(response) {
+					// Reload the page after successfully joining the group
+					location.reload();
+				},
+				error : function(xhr, status, error) {
+					// Handle error if joining the group fails
+					console.error(error);
+					// Display an error message or perform any other action as needed
+				}
+			});
+		}
+
+		function dislikePost(postId) {
+			$.ajax({
+				type : "POST",
+				url : "view_post",
+				data : {
+					postId : postId,
+					likeOrDislike : "dislike"
+				},
+				success : function(response) {
+					// Reload the page after successfully joining the group
+					location.reload();
+				},
+				error : function(xhr, status, error) {
+					// Handle error if joining the group fails
+					console.error(error);
+					// Display an error message or perform any other action as needed
+				}
+			});
+		}
+
 		function toggleAddCommentForm() {
 			var addCommentForm = document.querySelector('.post_comment');
 			var addCommentButton = document

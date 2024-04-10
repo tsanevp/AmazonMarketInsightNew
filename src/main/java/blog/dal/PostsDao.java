@@ -251,18 +251,50 @@ public class PostsDao {
 			}
 		}
 	}
+	
+	/**
+	 * Update the LastName of the Posts instance. This runs a UPDATE statement.
+	 */
+	public void updateLikeOrDislike(int postId, String likeOrDislike) throws SQLException {
+		String updatePost = "UPDATE Posts SET UpVotes = UpVotes + 1 WHERE PostId = ?;";
+
+		if (likeOrDislike.equals("dislike")) {
+			updatePost = "UPDATE Posts SET DownVotes = DownVotes + 1 WHERE PostId = ?;";
+		}
+		
+		Connection connection = null;
+		PreparedStatement updateStmt = null;
+		try {
+			connection = connectionManager.getConnection();
+			updateStmt = connection.prepareStatement(updatePost);
+			updateStmt.setInt(1, postId);
+			updateStmt.executeUpdate();
+
+			return;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
+			if (updateStmt != null) {
+				updateStmt.close();
+			}
+		}
+	}
 
 	/**
 	 * Delete the Posts instance. This runs a DELETE statement.
 	 */
-	public Posts delete(Posts post) throws SQLException {
+	public Posts delete(int postId) throws SQLException {
 		String deletePost = "DELETE FROM Posts WHERE PostId=?;";
 		Connection connection = null;
 		PreparedStatement deleteStmt = null;
 		try {
 			connection = connectionManager.getConnection();
 			deleteStmt = connection.prepareStatement(deletePost);
-			deleteStmt.setInt(1, post.getPostId());
+			deleteStmt.setInt(1, postId);
 			deleteStmt.executeUpdate();
 
 			// Return null so the caller can no longer operate on the Posts instance.

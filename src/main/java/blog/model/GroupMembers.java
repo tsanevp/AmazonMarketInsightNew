@@ -19,6 +19,13 @@ public class GroupMembers {
 		this.joinDate = joinDate;
 	}
 	
+	public GroupMembers(int groupId, String userName, Roles role) {
+		this.groupId = groupId;
+		this.userName = userName;
+		this.role = role;
+		this.joinDate = new Date();
+	}
+	
 	public GroupMembers(int groupId, String userName) {
 		this.groupId = groupId;
 		this.userName = userName;

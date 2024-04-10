@@ -2,6 +2,7 @@ package blog.servlet;
 
 import blog.dal.*;
 import blog.model.*;
+import blog.util.SessionUtil;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -31,7 +32,8 @@ import javax.servlet.http.HttpServletResponse;
  * localhost. 4. Point your browser to
  * http://localhost:8080/BlogApplication/findusers.
  */
-@WebServlet("/allposts")
+@SuppressWarnings("serial")
+@WebServlet("/all_posts")
 public class AllPosts extends HttpServlet {
 
 	protected PostsDao postsDao;
@@ -43,6 +45,12 @@ public class AllPosts extends HttpServlet {
 
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String username = SessionUtil.getUsername(req, resp);
+
+		if (username == null) {
+			return;
+		}
+		
 		// Map for storing messages
 		Map<String, String> messages = new HashMap<String, String>();
 		req.setAttribute("messages", messages);
@@ -59,7 +67,55 @@ public class AllPosts extends HttpServlet {
 		// Save the previous search term, so it can be used as the default
 
 		req.setAttribute("posts", posts);
+		req.setAttribute("username", username);
 
-		req.getRequestDispatcher("/AllPosts.jsp").forward(req, resp);
+		req.getRequestDispatcher("/WEB-INF/jsp/AllPosts.jsp").forward(req, resp);
 	}
+	
+	@Override
+	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String username = SessionUtil.getUsername(req, resp);
+
+		if (username == null) {
+			return;
+		}
+
+		System.out.println(true);
+
+		// Map for storing messages.
+		Map<String, String> messages = new HashMap<String, String>();
+		req.setAttribute("messages", messages);
+
+		
+		String postIdStr = req.getParameter("postId");
+		if (postIdStr == null || postIdStr.trim().isEmpty()) {
+			messages.put("error", "No postId was given.");
+			resp.sendRedirect(req.getContextPath() + "/all_posts");
+			return;
+		}
+		
+		int postId = -1;
+		
+		try {
+		    postId = Integer.parseInt(postIdStr);
+		} catch (NumberFormatException e) {
+			messages.put("error", "You provided an invalid post id");
+			resp.sendRedirect(req.getContextPath() + "/all_posts");
+			return;
+		}
+		
+		try {
+			postsDao.delete(postId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			messages.put("error", "Error deleting the post");
+			resp.sendRedirect(req.getContextPath() + "/all_posts");
+			return;
+		}
+		
+		System.out.println(false);
+		messages.put("success", "Deleted postId: " + postId);
+
+		resp.sendRedirect(req.getContextPath() + "/all_posts");
+		}
 }

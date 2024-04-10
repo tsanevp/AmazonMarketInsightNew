@@ -7,7 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CategoriesDao {
 	protected ConnectionManager connectionManager;
@@ -132,7 +134,7 @@ public class CategoriesDao {
 
 	public List<Categories> getAllCategories() throws SQLException {
 		List<Categories> categoryList = new ArrayList<>();
-		String selectAllCategories = "SELECT * FROM Categories;";
+		String selectAllCategories = "SELECT * FROM Categories ORDER BY CategoryId ASC;";
 		Connection connection = null;
 		PreparedStatement selectStmt = null;
 		ResultSet resultSet = null;
@@ -143,6 +145,37 @@ public class CategoriesDao {
 			while (resultSet.next()) {
 				Categories category = parseCategory(resultSet);
 				categoryList.add(category);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
+			if (selectStmt != null) {
+				selectStmt.close();
+			}
+			if (resultSet != null) {
+				resultSet.close();
+			}
+		}
+		return categoryList;
+	}
+	
+	public Map<Integer, String> getAllCategoriesMap() throws SQLException {
+		Map<Integer, String> categoryList = new HashMap<>();
+		String selectAllCategories = "SELECT * FROM Categories;";
+		Connection connection = null;
+		PreparedStatement selectStmt = null;
+		ResultSet resultSet = null;
+		try {
+			connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(selectAllCategories);
+			resultSet = selectStmt.executeQuery();
+			while (resultSet.next()) {
+				Categories category = parseCategory(resultSet);
+				categoryList.put(category.getCategoryId(), category.getName());
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

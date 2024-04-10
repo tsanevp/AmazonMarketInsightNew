@@ -13,59 +13,90 @@
 
 <title>Home</title>
 
+
+<style>
+/* Custom CSS styling */
+body {
+    font-family: Arial, sans-serif;
+}
+
+.hero {
+    background-image: url('images/hero-bg.jpg');
+    background-size: cover;
+    padding: 100px 0;
+    text-align: center;
+}
+
+.hero-heading {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.hero-text {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+.featured-products {
+    padding: 50px 0;
+}
+
+.section-heading {
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+}
+
+.about {
+    padding: 50px 0;
+    text-align: center;
+}
+
+.about-text {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+</style>
 </head>
 <body>
 	<jsp:include page="Header.jsp" />
 
-	<!-- 
-	<main class="form-signin">
-		<form action="">
-			<h1 class="h3 mb-3 fw-normal">Please sign in</h1>
-			<div class="form-floating">
-				<input type="email" class="form-control" id="floatingInput"
-					placeholder="name@example.com"> <label for="floatingInput">Email
-					address</label>
-			</div>
-			<div class="form-floating">
-				<input type="password" class="form-control" id="floatingPassword"
-					placeholder="Password"> <label for="floatingPassword">Password</label>
-			</div>
-			<div class="form-check text-start my-3">
-				<input class="form-check-input" type="checkbox" value="remember-me"
-					id="flexCheckDefault"> <label class="form-check-label"
-					for="flexCheckDefault"> Remember me </label>
-			</div>
-			<button class="btn btn-primary w-100 py-2" type="submit">Sign
-				in</button>
-		</form>
-	</main>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-heading">Welcome to Amazon Product Reviews</h1>
+            <p class="hero-text">Get authentic reviews and ratings on a wide range of Amazon products from real users.</p>
+            <a href="all_products" class="btn btn-primary">Explore Products</a>
+        </div>
+    </section>
 
-	<h1>Welcome to the Application</h1>
-	<ul>
-		<li><a href="UserCreate.jsp">Create a User</a></li>
-		<li><a href="users">See all Users</a></li>
-		<li><a href="UserUpdate.jsp">Update a User</a></li>
-		<li><a href="FindUsers.jsp">Find a User</a></li>
-		<li><a href="Wishlist.jsp">All Wishlists</a></li>
+    <!-- Featured Products Section -->
+    <section class="featured-products">
+        <div class="container">
+            <h2 class="section-heading">Featured Products</h2>
+            <div class="row">
+                <!-- Sample product card -->
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="images/product1.jpg" class="card-img-top" alt="Product Image">
+                        <div class="card-body">
+                            <h5 class="card-title">Product Title</h5>
+                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                            <a href="#" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Add more product cards here -->
+            </div>
+        </div>
+    </section>
 
-		<li><a href="CreditCards.jsp">Credit Cards Information</a></li>
-
-		<li><a href="Achievements.jsp">See Achievements</a></li>
-		<li><a href="AchievementsEarned.jsp">See Achievements Earned</a></li>
-
-		<li><a href="UserGroupsCreate.jsp">Create a User Group</a></li>
-		<li><a href="UserGroups.jsp">See all User Groups</a></li>
-		<li><a href="AddGroupMember.jsp">Add User Group Member</a></li>
-		<li><a href="GroupMembers.jsp">All Group Members</a></li>
-
-
-		<li><a href="Categories.jsp">Categories Information</a></li>
-		<li><a href="Products.jsp">See all Products</a></li>
-
-		<li><a href="allposts">All Posts</a></li>
-		<li><a href="PostComments.jsp">Post Comments</a></li>
-	</ul>
-	 -->
+    <!-- About Section -->
+    <section class="about">
+        <div class="container">
+            <h2 class="section-heading">About Us</h2>
+            <p class="about-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed blandit turpis nec sem fermentum, a volutpat justo feugiat. Duis fermentum turpis id nibh suscipit, ut ultricies sem malesuada.</p>
+        </div>
+    </section>
 
 	<!-- Error message modal -->
 	<div class="modal fade" id="errorModal" tabindex="-1" role="dialog"
