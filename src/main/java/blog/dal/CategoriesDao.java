@@ -134,7 +134,7 @@ public class CategoriesDao {
 
 	public List<Categories> getAllCategories() throws SQLException {
 		List<Categories> categoryList = new ArrayList<>();
-		String selectAllCategories = "SELECT * FROM Categories ORDER BY CategoryId ASC;";
+		String selectAllCategories = "SELECT * FROM Categories ORDER BY Name ASC;";
 		Connection connection = null;
 		PreparedStatement selectStmt = null;
 		ResultSet resultSet = null;

@@ -36,10 +36,10 @@
 			<div class="mb-3">
 				<label for="categoryId" class="form-label">Category ID</label> <select
 					class="form-select" id="categoryId" name="categoryId" required>
-					<option value="">Select Category ID</option>
+					<option value="">Select Category</option>
 					<c:forEach items="${categories}" var="category">
-						<option value="${category.getCategoryId()}">${category.getCategoryId()}
-							- ${category.getName()}</option>
+						<option value="${category.getCategoryId()}">${category.getName()}
+							</option>
 					</c:forEach>
 				</select>
 			</div>

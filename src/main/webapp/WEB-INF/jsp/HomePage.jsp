@@ -63,7 +63,7 @@ body {
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
-            <h1 class="hero-heading">Welcome to Amazon Product Reviews</h1>
+            <h1 class="hero-heading">Welcome to Amazon Review Hub!</h1>
             <p class="hero-text">Get authentic reviews and ratings on a wide range of Amazon products from real users.</p>
             <a href="all_products" class="btn btn-primary">Explore Products</a>
         </div>
