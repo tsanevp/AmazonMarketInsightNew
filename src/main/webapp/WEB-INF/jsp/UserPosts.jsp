@@ -44,7 +44,7 @@
 				<h1 class="mb-4">My Posts</h1>
 			</div>
 			<div class="col text-end">
-				<a href="create_post.jsp" class="btn btn-primary">Create New
+				<a href="create_post" class="btn btn-primary">Create New
 					Post</a>
 			</div>
 		</div>

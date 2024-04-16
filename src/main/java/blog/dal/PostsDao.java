@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,27 +41,32 @@ public class PostsDao {
 	 * INSERT statement.
 	 */
 	public Posts create(Posts post) throws SQLException {
-		String insertPost = "INSERT INTO Posts(PostId,Created,Review,Rating,NumInteractions,Active,UpVotes,DownVotes,Shares,UserName,ProductId) VALUES(?,?,?,?,?,?,?,?,?,?,?);";
+		String insertPost = "INSERT INTO Posts(Created,Review,Rating,UserName,ProductId) VALUES(?,?,?,?,?);";
 		Connection connection = null;
 		PreparedStatement insertStmt = null;
+		ResultSet resultKey = null;
 		try {
 			connection = connectionManager.getConnection();
-			insertStmt = connection.prepareStatement(insertPost);
+			insertStmt = connection.prepareStatement(insertPost, Statement.RETURN_GENERATED_KEYS);
 
-			insertStmt.setInt(1, post.getPostId());
-			insertStmt.setTimestamp(2, new Timestamp(post.getCreated().getTime()));
-			insertStmt.setString(3, post.getReview());
-			insertStmt.setDouble(4, post.getRating());
-			insertStmt.setInt(5, post.getNumInteractions());
-			insertStmt.setBoolean(6, post.isActive());
-			insertStmt.setInt(7, post.getUpVotes());
-			insertStmt.setInt(8, post.getDownVotes());
-			insertStmt.setInt(9, post.getShares());
-			insertStmt.setString(10, post.getUserName());
-			insertStmt.setString(11, post.getProductId());
-
+			insertStmt.setTimestamp(1, new Timestamp(post.getCreated().getTime()));
+			insertStmt.setString(2, post.getReview());
+			insertStmt.setDouble(3, post.getRating());
+			insertStmt.setString(4, post.getUserName());
+			insertStmt.setString(5, post.getProductId());
 			insertStmt.executeUpdate();
 
+			// Retrieve the auto-generated key and set it, so it can be used by the caller.
+			resultKey = insertStmt.getGeneratedKeys();
+			int postId = -1;
+
+			if (resultKey.next()) {
+				postId = resultKey.getInt(1);
+			} else {
+				throw new SQLException("Unable to retrieve auto-generated key.");
+			}
+
+			post.setPostId(postId);
 			return post;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -251,7 +257,7 @@ public class PostsDao {
 			}
 		}
 	}
-	
+
 	/**
 	 * Update the LastName of the Posts instance. This runs a UPDATE statement.
 	 */
@@ -261,7 +267,7 @@ public class PostsDao {
 		if (likeOrDislike.equals("dislike")) {
 			updatePost = "UPDATE Posts SET DownVotes = DownVotes + 1 WHERE PostId = ?;";
 		}
-		
+
 		Connection connection = null;
 		PreparedStatement updateStmt = null;
 		try {

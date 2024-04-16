@@ -17,7 +17,7 @@ body {
 	font-family: Arial, sans-serif;
 }
 
-.container {
+.posts-container {
 	padding: 20px;
 }
 
@@ -65,7 +65,7 @@ a:hover {
 <body>
 	<jsp:include page="Header.jsp" />
 
-	<div class="container">
+	<div class="container posts-container">
 		<h1>All Posts</h1>
 		<table class="table">
 			<thead class="table-light">

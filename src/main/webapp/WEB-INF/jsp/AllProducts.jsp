@@ -98,6 +98,12 @@ a:hover {
 	/* Remove margin for the last pagination number */
 	margin-right: 0;
 }
+
+/* Custom styling for links */
+.link-group-vertical {
+	display: flex;
+	flex-direction: column;
+}
 </style>
 </head>
 <body>
@@ -111,7 +117,7 @@ a:hover {
 					<th>Title</th>
 					<th>Category Name</th>
 					<th>Image</th>
-					<th>See on Amazon</th>			
+					<th>See on Amazon</th>
 					<th>Stars</th>
 					<th>Reviews</th>
 					<th>Actions</th>
@@ -130,17 +136,14 @@ a:hover {
 						<td>${product.getReviews()}</td>
 						<!-- Add more columns as needed -->
 						<td>
-							<div class="d-inline">
+							<div class="link-group-vertical">
 								<!-- Add actions here -->
-							</div> <c:if test="${post.getUserName() == username}">
-                            | 
-                            <form action="all_products" method="post"
-									style="display: inline;">
-									<input type="hidden" name="productId"
-										value="${product.getProductId()}">
-									<button type="submit" class="text-danger del-button">Delete</button>
-								</form>
-							</c:if>
+								<a href="#"
+									onclick="createPost('${product.getProductId()}')">Create
+									Post</a> <a href="#" 
+									onclick="addToWishlist('${product.getProductId()}')">Add to
+									Wishlist</a>
+							</div>
 						</td>
 					</tr>
 				</c:forEach>
@@ -177,5 +180,34 @@ a:hover {
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
 		type="text/javascript"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+		type="text/javascript"></script>
+
+	<script>
+		function createPost(productId) {
+			window.location.href = "create_post?productId=" + productId;
+		}
+
+		function addToWishlist(productId) {
+			$.ajax({
+				type : "POST",
+				url : "my_wishlist",
+				data : {
+					productId : productId,
+				},
+				success : function(response) {
+					// Reload the page after successfully joining the group
+					location.reload();
+				},
+				error : function(xhr, status, error) {
+					// Handle error if joining the group fails
+					console.error(error);
+					// Display an error message or perform any other action as needed
+				}
+			});
+			
+			alert("Product with ID " + productId + " added to wishlist!");
+		}
+	</script>
 </body>
 </html>

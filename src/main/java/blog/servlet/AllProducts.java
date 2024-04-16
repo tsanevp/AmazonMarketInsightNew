@@ -59,13 +59,12 @@ public class AllProducts extends HttpServlet {
 			categories = categoriesDao.getAllCategoriesMap();
 			
 			int totalProducts = productsDao.getTotalProductsCount();
-			System.out.println(totalProducts);
 			int totalPages = (int) Math.ceil((double) totalProducts / pageSize);
+			
 			req.setAttribute("products", products);
 			req.setAttribute("categories", categories);
 			req.setAttribute("page", page);
 			req.setAttribute("totalPages", totalPages);
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 			req.setAttribute("error", "There was an error retrieving the products or categories. Please try again.");
