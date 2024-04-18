@@ -10,7 +10,7 @@ public class Wishlist {
 		this.userName = userName;
 		this.productId = productId;
 	}
-	
+
 	public Wishlist(String userName, String productId) {
 		this.userName = userName;
 		this.productId = productId;

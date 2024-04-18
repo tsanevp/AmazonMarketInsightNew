@@ -44,17 +44,16 @@ public class GroupManagement extends HttpServlet {
 
 		String groupIdStr = req.getParameter("groupId");
 		String groupStatus = req.getParameter("groupStatus");
-		
+
 		boolean invalidGroupStatus = (groupStatus == null || groupStatus.trim().isEmpty());
-		
+
 		if ((groupIdStr == null || groupIdStr.trim().isEmpty()) && invalidGroupStatus) {
 			// error req
 			return;
 		}
-		
-		
+
 		int groupId = -1;
-        
+
 		try {
 			groupId = Integer.parseInt(groupIdStr);
 		} catch (NumberFormatException e) {
@@ -68,7 +67,7 @@ public class GroupManagement extends HttpServlet {
 			try {
 				UserGroups group = userGroupsDao.getUserGroupById(groupId);
 				List<GroupMembers> members = groupMembersDao.getAllMembersByGroupId(groupId);
-				
+
 				boolean isMember = false;
 				for (GroupMembers member : members) {
 					if (member.getUserName().equals(username)) {
@@ -84,10 +83,10 @@ public class GroupManagement extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 			return;
 		}
-		
+
 		try {
 			// After successfully adding or deleting the user, return a response
 			if (groupStatus.equals("joining")) {
@@ -95,16 +94,15 @@ public class GroupManagement extends HttpServlet {
 			} else {
 				groupMembersDao.delete(new GroupMembers(groupId, username));
 			}
-			
-	        resp.setContentType("text/plain");
-	        resp.getWriter().write("User successfully joined the group.");
-	        return;
+
+			resp.setContentType("text/plain");
+			resp.getWriter().write("User successfully joined the group.");
+			return;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+
 		List<UserGroups> userGroups = new ArrayList<>();
 
 		try {
@@ -117,7 +115,7 @@ public class GroupManagement extends HttpServlet {
 		}
 
 		Map<Integer, List<GroupMembers>> usersInGroups = new HashMap<>();
-		
+
 //		for (UserGroups group : userGroups) {
 //			List<GroupMembers> groupMemebrs = new ArrayList<>();
 //			int groupId = group.getGroupId();
@@ -131,14 +129,14 @@ public class GroupManagement extends HttpServlet {
 //			
 //			usersInGroups.put(groupId, groupMemebrs);
 //		}
-		
+
 		req.setAttribute("userGroups", userGroups);
 		req.setAttribute("usersInGroups", usersInGroups);
-		
+
 		// Just render the JSP.
 		req.getRequestDispatcher("/WEB-INF/jsp/AllGroups.jsp").forward(req, resp);
 	}
-	
+
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String username = SessionUtil.getUsername(req, resp);
@@ -153,17 +151,16 @@ public class GroupManagement extends HttpServlet {
 
 		String groupIdStr = req.getParameter("groupId");
 		String groupStatus = req.getParameter("groupStatus");
-		
+
 		boolean invalidGroupStatus = (groupStatus == null || groupStatus.trim().isEmpty());
-		
+
 		if ((groupIdStr == null || groupIdStr.trim().isEmpty()) && invalidGroupStatus) {
 			// error req
 			return;
 		}
-		
-		
+
 		int groupId = -1;
-        
+
 		try {
 			groupId = Integer.parseInt(groupIdStr);
 		} catch (NumberFormatException e) {
@@ -177,7 +174,7 @@ public class GroupManagement extends HttpServlet {
 			try {
 				UserGroups group = userGroupsDao.getUserGroupById(groupId);
 				List<GroupMembers> members = groupMembersDao.getAllMembersByGroupId(groupId);
-				
+
 				boolean isMember = false;
 				for (GroupMembers member : members) {
 					if (member.getUserName().equals(username)) {
@@ -193,10 +190,10 @@ public class GroupManagement extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 			return;
 		}
-		
+
 		try {
 			// After successfully adding or deleting the user, return a response
 			if (groupStatus.equals("joining")) {
@@ -204,16 +201,15 @@ public class GroupManagement extends HttpServlet {
 			} else {
 				groupMembersDao.delete(new GroupMembers(groupId, username));
 			}
-			
-	        resp.setContentType("text/plain");
-	        resp.getWriter().write("User successfully joined the group.");
-	        return;
+
+			resp.setContentType("text/plain");
+			resp.getWriter().write("User successfully joined the group.");
+			return;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+
 		List<UserGroups> userGroups = new ArrayList<>();
 
 		try {
@@ -226,7 +222,7 @@ public class GroupManagement extends HttpServlet {
 		}
 
 		Map<Integer, List<GroupMembers>> usersInGroups = new HashMap<>();
-		
+
 //		for (UserGroups group : userGroups) {
 //			List<GroupMembers> groupMemebrs = new ArrayList<>();
 //			int groupId = group.getGroupId();
@@ -240,10 +236,10 @@ public class GroupManagement extends HttpServlet {
 //			
 //			usersInGroups.put(groupId, groupMemebrs);
 //		}
-		
+
 		req.setAttribute("userGroups", userGroups);
 		req.setAttribute("usersInGroups", usersInGroups);
-		
+
 		// Just render the JSP.
 		req.getRequestDispatcher("/WEB-INF/jsp/AllGroups.jsp").forward(req, resp);
 	}

@@ -60,7 +60,7 @@ public class UserWishlist extends HttpServlet {
 		// Just render the JSP.
 		req.getRequestDispatcher("/WEB-INF/jsp/WishList.jsp").forward(req, resp);
 	}
-	
+
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String username = SessionUtil.getUsername(req, resp);
@@ -75,18 +75,18 @@ public class UserWishlist extends HttpServlet {
 		req.setAttribute("messages", messages);
 
 		String productId = req.getParameter("productId");
-				
+
 		if (!ValidationUtil.isValidString(productId)) {
 			// error req
 			return;
 		}
-		
+
 		try {
 			// After successfully adding or deleting the user, return a response
 			wishlistDao.create(new Wishlist(username, productId));
 			resp.setContentType("text/plain");
-	        resp.getWriter().write("Product " + productId + "successfully added to your wishlist");
-	        return;
+			resp.getWriter().write("Product " + productId + "successfully added to your wishlist");
+			return;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

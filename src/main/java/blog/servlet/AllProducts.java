@@ -57,10 +57,10 @@ public class AllProducts extends HttpServlet {
 		try {
 			products = productsDao.getAllProductsByPage(offset, pageSize);
 			categories = categoriesDao.getAllCategoriesMap();
-			
+
 			int totalProducts = productsDao.getTotalProductsCount();
 			int totalPages = (int) Math.ceil((double) totalProducts / pageSize);
-			
+
 			req.setAttribute("products", products);
 			req.setAttribute("categories", categories);
 			req.setAttribute("page", page);

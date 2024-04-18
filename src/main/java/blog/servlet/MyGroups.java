@@ -53,15 +53,15 @@ public class MyGroups extends HttpServlet {
 			resp.sendRedirect(req.getContextPath() + "/home_page?error=" + errorMessage);
 			return;
 		}
-		
+
 		String viewAction = req.getParameter("view");
-		
+
 		if (!ValidationUtil.isValidString(viewAction)) {
 			String errorMessage = "There was an error retrieving your user groups. Try again.";
 			resp.sendRedirect(req.getContextPath() + "/home_page?error=" + errorMessage);
 			return;
 		}
-		
+
 		List<UserGroups> userGroups = new ArrayList<>();
 		req.setAttribute("username", username);
 

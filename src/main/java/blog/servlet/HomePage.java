@@ -89,23 +89,22 @@ public class HomePage extends HttpServlet {
 		String htmlResponse;
 		String indicatorsHTML;
 
-
 		try {
 			if (option.equals("top_users")) {
 				optionSelected = postsDao.getMostActiveUser();
 				htmlResponse = generateCarouselHTML(optionSelected, "user_posts?username=");
-		        indicatorsHTML = generateCarouselIndicators(optionSelected.size());
-		        responseData.put("newSectionTitle", "Top Users");
+				indicatorsHTML = generateCarouselIndicators(optionSelected.size());
+				responseData.put("newSectionTitle", "Top Users");
 			} else if (option.equals("best_products")) {
 				List<Products> bestProducts = productsDao.getBestProducts();
 				htmlResponse = generateCarouselHTML(bestProducts);
-		        indicatorsHTML = generateCarouselIndicators(bestProducts.size());
-		        responseData.put("newSectionTitle", "Best Products");
+				indicatorsHTML = generateCarouselIndicators(bestProducts.size());
+				responseData.put("newSectionTitle", "Best Products");
 			} else {
 				optionSelected = postsDao.getMostPostedProducts();
 				htmlResponse = generateCarouselHTML(optionSelected, "all_posts?productId=");
-		        indicatorsHTML = generateCarouselIndicators(optionSelected.size());
-		        responseData.put("newSectionTitle", "Most Posted Products");
+				indicatorsHTML = generateCarouselIndicators(optionSelected.size());
+				responseData.put("newSectionTitle", "Most Posted Products");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -113,12 +112,11 @@ public class HomePage extends HttpServlet {
 			resp.getWriter().write("Invalid option parameter");
 			return;
 		}
-		
 
 		responseData.put("carouselHTML", htmlResponse);
-        responseData.put("carouselIndicatorsHTML", indicatorsHTML);
+		responseData.put("carouselIndicatorsHTML", indicatorsHTML);
 
-    	resp.setStatus(HttpServletResponse.SC_OK);
+		resp.setStatus(HttpServletResponse.SC_OK);
 		resp.setContentType("application/json");
 		resp.getWriter().write(new Gson().toJson(responseData));
 		return;
@@ -174,87 +172,84 @@ public class HomePage extends HttpServlet {
 
 		return htmlBuilder.toString();
 	}
-	
+
 	private String generateCarouselHTML(List<Products> products) {
-	    StringBuilder htmlBuilder = new StringBuilder();
+		StringBuilder htmlBuilder = new StringBuilder();
 
-	    // Start building the carousel inner HTML
-	    htmlBuilder.append("<div class=\"carousel-inner\">");
+		// Start building the carousel inner HTML
+		htmlBuilder.append("<div class=\"carousel-inner\">");
 
-	    // Variable to keep track of the index
-	    int index = 0;
+		// Variable to keep track of the index
+		int index = 0;
 
-	    // Iterate through the products list
-	    for (Products product : products) {
-	        String productName = product.getProductId();
-	        double stars = product.getStars();
-	        double price = product.getPrice();
-	        boolean bestSeller = product.isBestSeller();
+		// Iterate through the products list
+		for (Products product : products) {
+			String productName = product.getProductId();
+			double stars = product.getStars();
+			double price = product.getPrice();
+			boolean bestSeller = product.isBestSeller();
 
-	        // Check if the index is divisible by 3 or it's the last item
-	        if (index % 3 == 0 || index == 0) {
-	            // If it's the first item or divisible by 3, add carousel item div
-	            htmlBuilder.append("<div class=\"carousel-item");
-	            // Add active class if it's the first item
-	            if (index == 0) {
-	                htmlBuilder.append(" active");
-	            }
-	            htmlBuilder.append("\">");
-	            htmlBuilder.append("<div class=\"row\">");
-	        }
+			// Check if the index is divisible by 3 or it's the last item
+			if (index % 3 == 0 || index == 0) {
+				// If it's the first item or divisible by 3, add carousel item div
+				htmlBuilder.append("<div class=\"carousel-item");
+				// Add active class if it's the first item
+				if (index == 0) {
+					htmlBuilder.append(" active");
+				}
+				htmlBuilder.append("\">");
+				htmlBuilder.append("<div class=\"row\">");
+			}
 
-	        // Add column and card for each product
-	        htmlBuilder.append("<div class=\"col\">");
-	        htmlBuilder.append("<div class=\"card h-100\">");
-	        htmlBuilder.append("<div class=\"card-body\">");
-	        htmlBuilder.append("<h5 class=\"card-title\">").append(productName).append("</h5>");
-	        htmlBuilder.append("<p class=\"card-text\">Stars: ").append(stars).append("</p>");
-	        htmlBuilder.append("<p class=\"card-text\">Price: $").append(price).append("</p>");
-	        htmlBuilder.append("<p class=\"card-text\">Best Seller: ").append(bestSeller).append("</p>");
-	        htmlBuilder.append("<a href=\"filter_products?productId=" + productName + "\" class=\"btn btn-primary\">View Details</a>");
-	        htmlBuilder.append("</div></div></div>");
+			// Add column and card for each product
+			htmlBuilder.append("<div class=\"col\">");
+			htmlBuilder.append("<div class=\"card h-100\">");
+			htmlBuilder.append("<div class=\"card-body\">");
+			htmlBuilder.append("<h5 class=\"card-title\">").append(productName).append("</h5>");
+			htmlBuilder.append("<p class=\"card-text\">Stars: ").append(stars).append("</p>");
+			htmlBuilder.append("<p class=\"card-text\">Price: $").append(price).append("</p>");
+			htmlBuilder.append("<p class=\"card-text\">Best Seller: ").append(bestSeller).append("</p>");
+			htmlBuilder.append("<a href=\"filter_products?productId=" + productName
+					+ "\" class=\"btn btn-primary\">View Details</a>");
+			htmlBuilder.append("</div></div></div>");
 
-	        // Check if it's the last item in the row
-	        if ((index + 1) % 3 == 0 || index == products.size() - 1) {
-	            htmlBuilder.append("</div>"); // Close row div
-	            htmlBuilder.append("</div>"); // Close carousel item div
-	        }
+			// Check if it's the last item in the row
+			if ((index + 1) % 3 == 0 || index == products.size() - 1) {
+				htmlBuilder.append("</div>"); // Close row div
+				htmlBuilder.append("</div>"); // Close carousel item div
+			}
 
-	        // Increment index
-	        index++;
-	    }
+			// Increment index
+			index++;
+		}
 
-	    // End building the carousel inner HTML
-	    htmlBuilder.append("</div>");
+		// End building the carousel inner HTML
+		htmlBuilder.append("</div>");
 
-	    return htmlBuilder.toString();
+		return htmlBuilder.toString();
 	}
 
-
 	private String generateCarouselIndicators(int totalProducts) {
-	    StringBuilder indicatorsBuilder = new StringBuilder();
+		StringBuilder indicatorsBuilder = new StringBuilder();
 
-	    // Calculate the number of pages (each page displays 3 items)
-	    int numPages = (int) Math.ceil((double) totalProducts / 3);
+		// Calculate the number of pages (each page displays 3 items)
+		int numPages = (int) Math.ceil((double) totalProducts / 3);
 
-	    // Start building the carousel indicators HTML
-	    indicatorsBuilder.append("<ol class=\"carousel-indicators\">");
+		// Start building the carousel indicators HTML
+		indicatorsBuilder.append("<ol class=\"carousel-indicators\">");
 
-	    // Iterate through the number of pages and generate indicators
-	    for (int i = 0; i < numPages; i++) {
-	        // Add the active class to the first indicator
-	        String activeClass = (i == 0) ? "active" : "";
+		// Iterate through the number of pages and generate indicators
+		for (int i = 0; i < numPages; i++) {
+			// Add the active class to the first indicator
+			String activeClass = (i == 0) ? "active" : "";
 
-	        indicatorsBuilder.append("<li data-bs-target=\"#myCarousel\" data-bs-slide-to=\"")
-	                        .append(i)
-	                        .append("\" class=\"")
-	                        .append(activeClass)
-	                        .append("\"></li>");
-	    }
+			indicatorsBuilder.append("<li data-bs-target=\"#myCarousel\" data-bs-slide-to=\"").append(i)
+					.append("\" class=\"").append(activeClass).append("\"></li>");
+		}
 
-	    // End building the carousel indicators HTML
-	    indicatorsBuilder.append("</ol>");
+		// End building the carousel indicators HTML
+		indicatorsBuilder.append("</ol>");
 
-	    return indicatorsBuilder.toString();
+		return indicatorsBuilder.toString();
 	}
 }

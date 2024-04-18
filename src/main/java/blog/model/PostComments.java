@@ -25,7 +25,7 @@ public class PostComments {
 	public PostComments(int postCommentId) {
 		this.postCommentId = postCommentId;
 	}
-	
+
 	public PostComments(String comment, String userName, int postId) {
 		this.created = new Date();
 		this.comment = comment;
@@ -34,7 +34,7 @@ public class PostComments {
 		this.userName = userName;
 		this.postId = postId;
 	}
-	
+
 	public int getPostCommentId() {
 		return postCommentId;
 	}

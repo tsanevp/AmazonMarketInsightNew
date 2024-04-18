@@ -24,28 +24,28 @@ import java.util.Map;
 @WebServlet("/create_group")
 public class CreateGroup extends HttpServlet {
 
-    private final UserGroupsDao userGroupsDao;
-    private final CategoriesDao categoriesDao;
-    private final GroupMembersDao groupMembersDao;
+	private final UserGroupsDao userGroupsDao;
+	private final CategoriesDao categoriesDao;
+	private final GroupMembersDao groupMembersDao;
 
-    public CreateGroup() {
-        this.userGroupsDao = UserGroupsDao.getInstance();
-        this.categoriesDao = CategoriesDao.getInstance();
-        this.groupMembersDao = GroupMembersDao.getInstance();
-    }
+	public CreateGroup() {
+		this.userGroupsDao = UserGroupsDao.getInstance();
+		this.categoriesDao = CategoriesDao.getInstance();
+		this.groupMembersDao = GroupMembersDao.getInstance();
+	}
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    	String username = SessionUtil.getUsername(req, resp);
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String username = SessionUtil.getUsername(req, resp);
 
 		if (username == null) {
 			return;
 		}
-		
+
 		// Map for storing messages.
 		Map<String, String> messages = new HashMap<String, String>();
 		req.setAttribute("messages", messages);
-		
+
 		try {
 			List<Categories> categories = categoriesDao.getAllCategories();
 			req.setAttribute("categories", categories);
@@ -57,44 +57,44 @@ public class CreateGroup extends HttpServlet {
 		}
 	}
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    	String username = SessionUtil.getUsername(req, resp);
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String username = SessionUtil.getUsername(req, resp);
 
 		if (username == null) {
 			return;
 		}
-    	
-        // Retrieve form parameters
-        String groupName = req.getParameter("groupName");
-        String categoryIdStr = req.getParameter("categoryId");
 
-        // Validate form parameters
-        if (!ValidationUtil.isValidString(groupName) || !ValidationUtil.isValidString(categoryIdStr)) {
-            // Handle invalid input
-        	req.setAttribute("errorMessage", "Invalid group name or category ID.");
-        	req.getRequestDispatcher("/WEB-INF/jsp/CreateGroup.jsp").forward(req, resp);
-            return;
-        }
+		// Retrieve form parameters
+		String groupName = req.getParameter("groupName");
+		String categoryIdStr = req.getParameter("categoryId");
 
-        try {
-            int categoryId = Integer.parseInt(categoryIdStr);
+		// Validate form parameters
+		if (!ValidationUtil.isValidString(groupName) || !ValidationUtil.isValidString(categoryIdStr)) {
+			// Handle invalid input
+			req.setAttribute("errorMessage", "Invalid group name or category ID.");
+			req.getRequestDispatcher("/WEB-INF/jsp/CreateGroup.jsp").forward(req, resp);
+			return;
+		}
 
-            // Create a new group object
-            UserGroups newGroup = new UserGroups(groupName, categoryId);
+		try {
+			int categoryId = Integer.parseInt(categoryIdStr);
 
-            // Save the new group to the database and save current user as owner
-            newGroup = userGroupsDao.create(newGroup);
-            groupMembersDao.create(new GroupMembers(newGroup.getGroupId(), username, GroupMembers.Roles.OWNER));
+			// Create a new group object
+			UserGroups newGroup = new UserGroups(groupName, categoryId);
 
-            // Redirect to the AllGroups servlet to display all groups
-            resp.sendRedirect(req.getContextPath() + "/my_groups?view=owned");
-        } catch (NumberFormatException | SQLException e) {
-            e.printStackTrace();
-            // Handle database error
-            // You can redirect to an error page or display an error message
-            req.setAttribute("errorMessage", "An error occurred while creating the group. Please try again.");
-            req.getRequestDispatcher("/WEB-INF/jsp/CreateGroup.jsp").forward(req, resp);
-        }
-    }
+			// Save the new group to the database and save current user as owner
+			newGroup = userGroupsDao.create(newGroup);
+			groupMembersDao.create(new GroupMembers(newGroup.getGroupId(), username, GroupMembers.Roles.OWNER));
+
+			// Redirect to the AllGroups servlet to display all groups
+			resp.sendRedirect(req.getContextPath() + "/my_groups?view=owned");
+		} catch (NumberFormatException | SQLException e) {
+			e.printStackTrace();
+			// Handle database error
+			// You can redirect to an error page or display an error message
+			req.setAttribute("errorMessage", "An error occurred while creating the group. Please try again.");
+			req.getRequestDispatcher("/WEB-INF/jsp/CreateGroup.jsp").forward(req, resp);
+		}
+	}
 }

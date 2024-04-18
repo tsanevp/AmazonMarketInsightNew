@@ -99,7 +99,7 @@ public class AdministratorsDao extends PersonsDao {
 		}
 		return null;
 	}
-	
+
 	public boolean isAdmin(String userName) throws SQLException {
 		// To build an Administrator object, we need the Persons record, too.
 		String selectAdministrator = "SELECT * "

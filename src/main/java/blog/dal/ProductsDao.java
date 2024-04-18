@@ -293,29 +293,29 @@ public class ProductsDao {
 		}
 		return products;
 	}
-	
-	 // Method to retrieve products by title containing the specified string
-    public List<Products> getProductsByTitle(String searchString) throws SQLException {
-        List<Products> products = new ArrayList<>();
-        
-        String selectProducts = "SELECT * FROM products WHERE title LIKE ?";
+
+	// Method to retrieve products by title containing the specified string
+	public List<Products> getProductsByTitle(String searchString) throws SQLException {
+		List<Products> products = new ArrayList<>();
+
+		String selectProducts = "SELECT * FROM products WHERE title LIKE ?";
 		Connection connection = null;
 		PreparedStatement selectStmt = null;
 		ResultSet results = null;
-        
+
 		try {
 			connection = connectionManager.getConnection();
 			selectStmt = connection.prepareStatement(selectProducts);
-			
-            // Set the search parameter with wildcard '%' to match any substring
+
+			// Set the search parameter with wildcard '%' to match any substring
 			selectStmt.setString(1, "%" + searchString + "%");
-            
+
 			results = selectStmt.executeQuery();
-            while (results.next()) {            
-                products.add(parseProduct(results));
-            }
-            
-        } catch (SQLException e) {
+			while (results.next()) {
+				products.add(parseProduct(results));
+			}
+
+		} catch (SQLException e) {
 			e.printStackTrace();
 			throw e;
 		} finally {
@@ -329,10 +329,10 @@ public class ProductsDao {
 				results.close();
 			}
 		}
-        
-        return products;
-    }
-	
+
+		return products;
+	}
+
 	public List<Products> getBestProducts() throws SQLException {
 		List<Products> bestProducts = new ArrayList<>();
 
@@ -370,9 +370,9 @@ public class ProductsDao {
 		return bestProducts;
 	}
 
-
 	public List<Products> getFilteredAndOrderedProducts(String category, String minPrice, String maxPrice,
-			String rating, String minReviews, String maxReviews, String isBestSeller, String productId, String orderBy) throws SQLException {
+			String rating, String minReviews, String maxReviews, String isBestSeller, String productId, String orderBy)
+			throws SQLException {
 		List<Products> productList = new ArrayList<>();
 		StringBuilder queryBuilder = new StringBuilder("SELECT * FROM Products WHERE 1=1");
 
@@ -403,13 +403,13 @@ public class ProductsDao {
 		} else if (ValidationUtil.isValidString(maxReviews)) {
 			queryBuilder.append(" AND Reviews <= ?");
 		}
-		
+
 		// Add reviews filter
 		if (ValidationUtil.isValidString(isBestSeller)) {
 			if (isBestSeller.equals("true")) {
-				queryBuilder.append(" AND BestSeller = '1'");				
+				queryBuilder.append(" AND BestSeller = '1'");
 			} else {
-				queryBuilder.append(" AND BestSeller = '0'");				
+				queryBuilder.append(" AND BestSeller = '0'");
 			}
 		}
 
@@ -417,7 +417,7 @@ public class ProductsDao {
 		if (ValidationUtil.isValidString(productId)) {
 			queryBuilder.append(" AND ProductId = ?");
 		}
-		
+
 		// Append ordering condition
 		if (orderBy != null && !orderBy.isEmpty()) {
 			if (orderBy.equals("asc")) {
@@ -454,7 +454,7 @@ public class ProductsDao {
 			if (ValidationUtil.isValidString(maxReviews)) {
 				selectStmt.setInt(parameterIndex++, Integer.parseInt(maxReviews));
 			}
-			
+
 			if (ValidationUtil.isValidString(productId)) {
 				selectStmt.setString(parameterIndex++, productId);
 			}

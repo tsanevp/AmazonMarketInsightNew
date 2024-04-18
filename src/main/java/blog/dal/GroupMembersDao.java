@@ -90,10 +90,10 @@ public class GroupMembersDao {
 		}
 		return null;
 	}
-	
+
 	public List<GroupMembers> getAllMembersByGroupId(int groupId) throws SQLException {
 		List<GroupMembers> groupMembers = new ArrayList<>();
-		
+
 		String selectGroupMembers = "SELECT * FROM GroupMembers WHERE GroupId=?;";
 		Connection connection = null;
 		PreparedStatement selectStmt = null;
@@ -109,8 +109,8 @@ public class GroupMembersDao {
 				String role = results.getString("Role");
 				Date joinDate = new Date(results.getTimestamp("JoinDate").getTime());
 
-				groupMembers.add(new GroupMembers(resultGroupId, userName, GroupMembers.Roles.valueOf(role.toUpperCase()),
-						joinDate));
+				groupMembers.add(new GroupMembers(resultGroupId, userName,
+						GroupMembers.Roles.valueOf(role.toUpperCase()), joinDate));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -134,7 +134,7 @@ public class GroupMembersDao {
 		Connection connection = null;
 		PreparedStatement selectStmt = null;
 		ResultSet results = null;
-		
+
 		try {
 			connection = connectionManager.getConnection();
 			selectStmt = connection.prepareStatement(selectGroupMember);
@@ -145,7 +145,7 @@ public class GroupMembersDao {
 			if (results.next()) {
 				return true;
 			}
-			
+
 			return false;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -162,13 +162,13 @@ public class GroupMembersDao {
 			}
 		}
 	}
-	
+
 	public boolean isUserOwnerOfGroup(String username, int groupId) throws SQLException {
 		String selectGroupMember = "SELECT * FROM GroupMembers WHERE GroupId=? AND UserName=? AND Role='Owner';";
 		Connection connection = null;
 		PreparedStatement selectStmt = null;
 		ResultSet results = null;
-		
+
 		try {
 			connection = connectionManager.getConnection();
 			selectStmt = connection.prepareStatement(selectGroupMember);
@@ -179,7 +179,7 @@ public class GroupMembersDao {
 			if (results.next()) {
 				return true;
 			}
-			
+
 			return false;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -196,7 +196,7 @@ public class GroupMembersDao {
 			}
 		}
 	}
-	
+
 	public GroupMembers updateRole(GroupMembers groupMember, GroupMembers.Roles newRole) throws SQLException {
 		String updateGroupMember = "UPDATE GroupMembers SET Role=? WHERE GroupId=? AND UserName=?;";
 		Connection connection = null;

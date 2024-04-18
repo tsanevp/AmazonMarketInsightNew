@@ -58,13 +58,13 @@ public class PostCommentsDao {
 			// Retrieve the auto-generated key and set it, so it can be used by the caller.
 			resultKey = insertStmt.getGeneratedKeys();
 			int commentId = -1;
-			
-			if(resultKey.next()) {
+
+			if (resultKey.next()) {
 				commentId = resultKey.getInt(1);
 			} else {
 				throw new SQLException("Unable to retrieve auto-generated key.");
 			}
-			
+
 			postComment.setPostCommentId(commentId);
 			return postComment;
 		} catch (SQLException e) {
@@ -124,8 +124,9 @@ public class PostCommentsDao {
 	}
 
 	/**
-	 * Get the Post's comments records by fetching it from your MySQL instance. This runs a
-	 * SELECT statement and returns a list of comments for single Posts instance.
+	 * Get the Post's comments records by fetching it from your MySQL instance. This
+	 * runs a SELECT statement and returns a list of comments for single Posts
+	 * instance.
 	 */
 	public List<PostComments> getCommentsFromPostId(int postId) throws SQLException {
 		List<PostComments> postComments = new ArrayList<>();
@@ -149,7 +150,8 @@ public class PostCommentsDao {
 				String userName = results.getString("UserName");
 				int resultPostId = results.getInt("PostId");
 
-				postComments.add(new PostComments(postCommentId, created, comment, upVotes, downVotes, userName, resultPostId));
+				postComments.add(
+						new PostComments(postCommentId, created, comment, upVotes, downVotes, userName, resultPostId));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -167,10 +169,11 @@ public class PostCommentsDao {
 		}
 		return postComments;
 	}
-	
+
 	/**
-	 * Get the Post's comments records by fetching it from your MySQL instance. This runs a
-	 * SELECT statement and returns a list of comments for single Posts instance.
+	 * Get the Post's comments records by fetching it from your MySQL instance. This
+	 * runs a SELECT statement and returns a list of comments for single Posts
+	 * instance.
 	 */
 	public List<PostComments> getCommentsFromUserName(String username) throws SQLException {
 		List<PostComments> postComments = new ArrayList<>();
@@ -194,7 +197,8 @@ public class PostCommentsDao {
 				String userName = results.getString("UserName");
 				int resultPostId = results.getInt("PostId");
 
-				postComments.add(new PostComments(postCommentId, created, comment, upVotes, downVotes, userName, resultPostId));
+				postComments.add(
+						new PostComments(postCommentId, created, comment, upVotes, downVotes, userName, resultPostId));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -212,7 +216,7 @@ public class PostCommentsDao {
 		}
 		return postComments;
 	}
-	
+
 	/**
 	 * Update the LastName of the PostComments instance. This runs a UPDATE
 	 * statement.

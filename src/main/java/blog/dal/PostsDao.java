@@ -180,7 +180,7 @@ public class PostsDao {
 		}
 		return posts;
 	}
-	
+
 	/**
 	 * Get the Posts record by fetching it from your MySQL instance. This runs a
 	 * SELECT statement and returns a single Posts instance.
@@ -279,7 +279,7 @@ public class PostsDao {
 		}
 		return posts;
 	}
-	
+
 	public Map<String, Integer> getMostPostedProducts() throws SQLException {
 		Map<String, Integer> mostPostedProducts = new HashMap<>();
 
@@ -314,7 +314,7 @@ public class PostsDao {
 		}
 		return mostPostedProducts;
 	}
-	
+
 	public Map<String, Integer> getMostActiveUser() throws SQLException {
 		Map<String, Integer> userWithMostPosts = new HashMap<>();
 

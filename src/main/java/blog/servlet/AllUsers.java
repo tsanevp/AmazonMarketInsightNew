@@ -37,7 +37,7 @@ public class AllUsers extends HttpServlet {
 		if (username == null) {
 			return;
 		}
-		
+
 		// Map for storing messages.
 		Map<String, String> messages = new HashMap<String, String>();
 		req.setAttribute("messages", messages);
@@ -46,22 +46,22 @@ public class AllUsers extends HttpServlet {
 
 		try {
 			users = usersDao.getAllUsers().stream()
-	        .filter(user -> !user.getUserName().toLowerCase().trim().equals(username.toLowerCase().trim()))
-	        .collect(Collectors.toList());
+					.filter(user -> !user.getUserName().toLowerCase().trim().equals(username.toLowerCase().trim()))
+					.collect(Collectors.toList());
 		} catch (SQLException e) {
 			e.printStackTrace();
 			String errorMessage = "There was an error retrieving all users. Try again.";
 			resp.sendRedirect(req.getContextPath() + "/home_page?error=" + errorMessage);
 			return;
 		}
-		
+
 		messages.put("success", "Displaying results for all users");
 
 		req.setAttribute("users", users);
 
 		req.getRequestDispatcher("/WEB-INF/jsp/AllUsers.jsp").forward(req, resp);
 	}
-	
+
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String username = SessionUtil.getUsername(req, resp);
@@ -75,16 +75,16 @@ public class AllUsers extends HttpServlet {
 		req.setAttribute("messages", messages);
 
 		String action = req.getParameter("action");
-		
+
 		if (ValidationUtil.isValidString(action) && action.equals("delete")) {
 			String userToDelete = req.getParameter("username");
-			
+
 			if (!ValidationUtil.isValidString(userToDelete)) {
 				messages.put("error", "You provided an invalid user id");
 				resp.sendRedirect(req.getContextPath() + "/AllUsers.jsp");
 				return;
 			}
-			
+
 			try {
 				usersDao.delete(userToDelete);
 				resp.setContentType("text/plain");
@@ -97,7 +97,7 @@ public class AllUsers extends HttpServlet {
 				return;
 			}
 		}
-		
+
 		resp.getWriter().write("Something is wrong");
 	}
 }

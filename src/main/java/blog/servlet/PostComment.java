@@ -36,22 +36,21 @@ public class PostComment extends HttpServlet {
 		if (username == null) {
 			return;
 		}
-		
+
 		// Map for storing messages.
 		Map<String, String> messages = new HashMap<String, String>();
 		req.setAttribute("messages", messages);
 
-		
 		String postIdStr = req.getParameter("postId");
 		if (!ValidationUtil.isValidString(postIdStr)) {
 			messages.put("error", "No postId was given.");
 			req.getRequestDispatcher("/WEB-INF/jsp/UserPosts.jsp").forward(req, resp);
 			return;
 		}
-		
+
 		req.getRequestDispatcher("/WEB-INF/jsp/SinglePost.jsp").forward(req, resp);
 	}
-	
+
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String username = SessionUtil.getUsername(req, resp);
@@ -59,22 +58,22 @@ public class PostComment extends HttpServlet {
 		if (username == null) {
 			return;
 		}
-		
+
 		// Map for storing messages.
 		Map<String, String> messages = new HashMap<String, String>();
 		req.setAttribute("messages", messages);
-		
+
 		String postIdStr = req.getParameter("postId");
 		if (postIdStr == null || postIdStr.trim().isEmpty()) {
 			messages.put("error", "There was an error retrieving the post.");
 			resp.sendRedirect(req.getContextPath() + "/all_posts");
 			return;
 		}
-		
+
 		int postId = -1;
-		
+
 		try {
-		    postId = Integer.parseInt(postIdStr);
+			postId = Integer.parseInt(postIdStr);
 		} catch (NumberFormatException e) {
 			messages.put("error", "You provided an invalid post id");
 			resp.sendRedirect(req.getContextPath() + "/all_posts");
@@ -87,14 +86,14 @@ public class PostComment extends HttpServlet {
 			resp.sendRedirect(req.getContextPath() + "/view_post?postId=" + postIdStr);
 			return;
 		}
-				
+
 		try {
 			postCommentsDao.create(new PostComments(comment, username, postId));
 		} catch (SQLException e) {
 			e.printStackTrace();
 			messages.put("error", "Comment could not be added to the post. Try again.");
 		}
-		
+
 		resp.sendRedirect(req.getContextPath() + "/view_post?postId=" + postIdStr);
 	}
 }

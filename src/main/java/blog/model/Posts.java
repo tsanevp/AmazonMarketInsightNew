@@ -29,7 +29,7 @@ public class Posts {
 		this.userName = userName;
 		this.productId = productId;
 	}
-	
+
 	public Posts(String review, double rating, String userName, String productId) {
 		this.created = new Date();
 		this.review = review;

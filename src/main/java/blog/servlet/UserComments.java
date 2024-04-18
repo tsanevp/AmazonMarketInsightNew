@@ -100,7 +100,6 @@ public class UserComments extends HttpServlet {
 			return;
 		}
 
-		
 		try {
 			commentsDao.delete(commentId);
 			resp.setContentType("text/plain");

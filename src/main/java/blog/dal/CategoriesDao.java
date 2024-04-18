@@ -162,7 +162,7 @@ public class CategoriesDao {
 		}
 		return categoryList;
 	}
-	
+
 	public Map<Integer, String> getAllCategoriesMap() throws SQLException {
 		Map<Integer, String> categoryList = new HashMap<>();
 		String selectAllCategories = "SELECT * FROM Categories;";

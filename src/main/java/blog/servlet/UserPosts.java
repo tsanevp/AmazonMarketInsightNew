@@ -44,13 +44,13 @@ public class UserPosts extends HttpServlet {
 		req.setAttribute("messages", messages);
 
 		String userToView = req.getParameter("username");
-		
+
 		if (!ValidationUtil.isValidString(userToView)) {
 			messages.put("error", "No username to view was given.");
 			resp.sendRedirect(req.getContextPath() + "/all_users");
 			return;
 		}
-		
+
 		Users user = null;
 		List<Posts> posts = new ArrayList<>();
 
@@ -68,7 +68,7 @@ public class UserPosts extends HttpServlet {
 		// Just render the JSP.
 		req.getRequestDispatcher("/WEB-INF/jsp/UserPosts.jsp").forward(req, resp);
 	}
-	
+
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String username = SessionUtil.getUsername(req, resp);
@@ -81,24 +81,23 @@ public class UserPosts extends HttpServlet {
 		Map<String, String> messages = new HashMap<String, String>();
 		req.setAttribute("messages", messages);
 
-		
 		String postIdStr = req.getParameter("postId");
 		if (postIdStr == null || postIdStr.trim().isEmpty()) {
 			messages.put("error", "No postId was given.");
 			resp.sendRedirect(req.getContextPath() + "/all_users");
 			return;
 		}
-		
+
 		int postId = -1;
-		
+
 		try {
-		    postId = Integer.parseInt(postIdStr);
+			postId = Integer.parseInt(postIdStr);
 		} catch (NumberFormatException e) {
 			messages.put("error", "You provided an invalid post id");
 			resp.sendRedirect(req.getContextPath() + "/all_users");
 			return;
 		}
-		
+
 		try {
 			postsDao.delete(postId);
 		} catch (SQLException e) {
@@ -107,9 +106,9 @@ public class UserPosts extends HttpServlet {
 			resp.sendRedirect(req.getContextPath() + "/all_users");
 			return;
 		}
-		
+
 		messages.put("success", "Deleted postId: " + postId);
 
 		resp.sendRedirect(req.getContextPath() + "/user_posts");
-		}
+	}
 }

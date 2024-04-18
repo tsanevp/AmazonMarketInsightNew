@@ -55,36 +55,36 @@ public class AllGroups extends HttpServlet {
 
 		Map<Integer, List<GroupMembers>> usersInGroups = new HashMap<>();
 		Map<Integer, String> groupIdToString = new HashMap<>();
-		
+
 		for (UserGroups group : userGroups) {
 			List<GroupMembers> groupMemebrs = new ArrayList<>();
 
 			int groupId = group.getGroupId();
 			groupIdToString.put(groupId, "" + groupId);
-			
+
 			try {
 				groupMemebrs = groupMembersDao.getAllMembersByGroupId(groupId);
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-			
+
 			boolean isMember = false;
 			for (GroupMembers member : groupMemebrs) {
 				if (member.getUserName().equals(username)) {
 					isMember = true;
 					break;
 				}
-			} 
+			}
 			req.setAttribute("" + groupId, isMember);
-			
+
 			usersInGroups.put(groupId, groupMemebrs);
 		}
-		
+
 		req.setAttribute("username", username);
 		req.setAttribute("userGroups", userGroups);
 		req.setAttribute("groupIdToString", groupIdToString);
 		req.setAttribute("usersInGroups", usersInGroups);
-		
+
 		// Just render the JSP.
 		req.getRequestDispatcher("/WEB-INF/jsp/AllGroups.jsp").forward(req, resp);
 	}

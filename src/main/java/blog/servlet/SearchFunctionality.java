@@ -43,7 +43,6 @@ public class SearchFunctionality extends HttpServlet {
 		Map<String, String> messages = new HashMap<>();
 		req.setAttribute("messages", messages);
 
-		
 		String query = req.getParameter("query");
 		if (!ValidationUtil.isValidString(query)) {
 			req.setAttribute("error", "There was an error in your search parameters. Please try again.");
@@ -52,51 +51,51 @@ public class SearchFunctionality extends HttpServlet {
 			resp.sendRedirect(req.getContextPath() + "/home_page");
 			return;
 		}
-		
+
 		// Perform search logic based on the query
-		List<Products> searchResults = searchProducts(query); 
+		List<Products> searchResults = searchProducts(query);
 
-		  // Pagination logic
-	    int page = 1;
-	    int pageSize = 20; // Number of products per page
+		// Pagination logic
+		int page = 1;
+		int pageSize = 20; // Number of products per page
 
-	    if (req.getParameter("page") != null) {
-	        page = Integer.parseInt(req.getParameter("page"));
-	    }
+		if (req.getParameter("page") != null) {
+			page = Integer.parseInt(req.getParameter("page"));
+		}
 
-	    int totalSearchedProducts = searchResults.size();
-	    int totalPages = (int) Math.ceil((double) totalSearchedProducts / pageSize);
+		int totalSearchedProducts = searchResults.size();
+		int totalPages = (int) Math.ceil((double) totalSearchedProducts / pageSize);
 
-	    // Calculate offset for pagination
-	    int offset = (page - 1) * pageSize;
-	    int endIndex = Math.min(offset + pageSize, totalSearchedProducts);
+		// Calculate offset for pagination
+		int offset = (page - 1) * pageSize;
+		int endIndex = Math.min(offset + pageSize, totalSearchedProducts);
 
-	    // Get sublist of filtered products for current page
-	    List<Products> products = searchResults.subList(offset, endIndex);
+		// Get sublist of filtered products for current page
+		List<Products> products = searchResults.subList(offset, endIndex);
 
-	    // Retrieve categories
-	    Map<Integer, String> categories = new HashMap<>();
-	    try {
-	        categories = categoriesDao.getAllCategoriesMap();
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        req.setAttribute("error", "There was an error retrieving the categories. Please try again.");
-	        resp.sendRedirect(req.getContextPath() + "/home_page");
-	        return;
-	    }
+		// Retrieve categories
+		Map<Integer, String> categories = new HashMap<>();
+		try {
+			categories = categoriesDao.getAllCategoriesMap();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			req.setAttribute("error", "There was an error retrieving the categories. Please try again.");
+			resp.sendRedirect(req.getContextPath() + "/home_page");
+			return;
+		}
 
 		// Set the search results in the request attributes
 		req.setAttribute("query", query);
 		req.setAttribute("totalCount", totalSearchedProducts);
-		req.setAttribute("searchResults", searchResults);		
+		req.setAttribute("searchResults", searchResults);
 		req.setAttribute("products", products);
-	    req.setAttribute("categories", categories);
-	    req.setAttribute("page", page);
-	    req.setAttribute("totalPages", totalPages);
+		req.setAttribute("categories", categories);
+		req.setAttribute("page", page);
+		req.setAttribute("totalPages", totalPages);
 
-	    messages.put("success", "Displaying results for searched products");
+		messages.put("success", "Displaying results for searched products");
 
-	    req.getRequestDispatcher("/WEB-INF/jsp/SearchedProducts.jsp").forward(req, resp);
+		req.getRequestDispatcher("/WEB-INF/jsp/SearchedProducts.jsp").forward(req, resp);
 	}
 
 //	// Method to perform search based on the query
@@ -116,14 +115,13 @@ public class SearchFunctionality extends HttpServlet {
 	// Method to search for products
 	private List<Products> searchProducts(String query) {
 		List<Products> products = new ArrayList<>();
-		
+
 		try {
 			products = productsDao.getProductsByTitle(query);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-			
 
 		return products;
 	}

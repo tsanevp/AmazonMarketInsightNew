@@ -40,17 +40,17 @@ public class UserGroupsDao {
 			insertStmt.setTimestamp(2, new Timestamp(userGroup.getCreated().getTime()));
 			insertStmt.setInt(3, userGroup.getCategoryId());
 			insertStmt.executeUpdate();
-			
+
 			// Retrieve the auto-generated key and set it, so it can be used by the caller.
 			resultKey = insertStmt.getGeneratedKeys();
 			int groupId = -1;
-			
-			if(resultKey.next()) {
+
+			if (resultKey.next()) {
 				groupId = resultKey.getInt(1);
 			} else {
 				throw new SQLException("Unable to retrieve auto-generated key.");
 			}
-			
+
 			userGroup.setGroupId(groupId);
 			return userGroup;
 		} catch (SQLException e) {
@@ -135,7 +135,7 @@ public class UserGroupsDao {
 		}
 		return userGroups;
 	}
-	
+
 	public List<UserGroups> getAllMyUserGroups(String userName) throws SQLException {
 		List<UserGroups> userGroups = new ArrayList<>();
 		String selectAllUserGroups = "SELECT * FROM UserGroups;";
@@ -170,7 +170,7 @@ public class UserGroupsDao {
 		}
 		return userGroups;
 	}
-	
+
 	public UserGroups updateName(UserGroups userGroup, String newName) throws SQLException {
 		String updateUserGroup = "UPDATE UserGroups SET GroupName=? WHERE GroupId=?;";
 		Connection connection = null;

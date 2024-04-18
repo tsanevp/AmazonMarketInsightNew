@@ -111,7 +111,7 @@ public class Login extends HttpServlet {
 
 		return false;
 	}
-	
+
 	/**
 	 * Authenticates the current user is an admin.
 	 *

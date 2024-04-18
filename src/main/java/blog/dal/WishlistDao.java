@@ -98,7 +98,7 @@ public class WishlistDao {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Get the Wishlist record by fetching it from your MySQL instance. This runs a
 	 * SELECT statement and returns a single Wishlist instance.
@@ -135,7 +135,7 @@ public class WishlistDao {
 				results.close();
 			}
 		}
-		
+
 		return wishlistItems;
 	}
 

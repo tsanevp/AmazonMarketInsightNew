@@ -52,7 +52,7 @@ public class UserSubscription extends HttpServlet {
 		if (username == null) {
 			return;
 		}
-		
+
 		// Map for storing messages.
 		Map<String, String> messages = new HashMap<String, String>();
 		req.setAttribute("messages", messages);
@@ -65,9 +65,9 @@ public class UserSubscription extends HttpServlet {
 			e.printStackTrace();
 			throw new IOException(e);
 		}
-		
+
 		List<CreditCards> creditCards = new ArrayList<>();
-		
+
 		try {
 			creditCards = creditCardsDao.getCreditCardsByUserName(username);
 		} catch (SQLException e) {
@@ -76,7 +76,7 @@ public class UserSubscription extends HttpServlet {
 		}
 
 		req.setAttribute("creditCards", creditCards);
-		
+
 		String subscriptionStatus = req.getParameter("subscriptionStatus");
 		if (subscriptionStatus != null && subscriptionStatus.equals("false")) {
 			System.out.println("DFSKLF");
@@ -90,11 +90,11 @@ public class UserSubscription extends HttpServlet {
 				return;
 			}
 		}
-		
+
 		req.setAttribute("user", user);
 		req.getRequestDispatcher("/WEB-INF/jsp/ManageSubscription.jsp").forward(req, resp);
 	}
-	
+
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String username = SessionUtil.getUsername(req, resp);
@@ -102,7 +102,7 @@ public class UserSubscription extends HttpServlet {
 		if (username == null) {
 			return;
 		}
-				
+
 		// Map for storing messages.
 		Map<String, String> messages = new HashMap<String, String>();
 		req.setAttribute("messages", messages);
@@ -115,13 +115,13 @@ public class UserSubscription extends HttpServlet {
 			e.printStackTrace();
 			throw new IOException(e);
 		}
-		
+
 		req.setAttribute("user", user);
-		
+
 		String cardNumber = req.getParameter("cardNumber");
 		String expiration = req.getParameter("expiration");
 		String existingCard = req.getParameter("existingCards");
-		
+
 		if (existingCard != null) {
 			try {
 				user = usersDao.updateSubsciption(user, true);
@@ -135,13 +135,13 @@ public class UserSubscription extends HttpServlet {
 				return;
 			}
 		}
-		
+
 		if (cardNumber == null || expiration == null) {
 			messages.put("error", "You must provide all new card details for your payment");
 			req.getRequestDispatcher("/WEB-INF/jsp/ManageSubscription.jsp").forward(req, resp);
 			return;
-		} 
-		
+		}
+
 		try {
 			user = usersDao.updateSubsciption(user, true);
 			messages.put("success", "You have been subscribed");
@@ -154,5 +154,5 @@ public class UserSubscription extends HttpServlet {
 			return;
 		}
 	}
-	
+
 }

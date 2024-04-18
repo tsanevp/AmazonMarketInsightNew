@@ -33,171 +33,172 @@ public class AllProductsFiltered extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		  String username = SessionUtil.getUsername(req, resp);
+		String username = SessionUtil.getUsername(req, resp);
 
-		    if (username == null) {
-		        return;
-		    }
-		    
-		    // Map for storing messages
-		    Map<String, String> messages = new HashMap<>();
-		    req.setAttribute("messages", messages);
+		if (username == null) {
+			return;
+		}
 
-		    String category = req.getParameter("category");
-		    String minPrice = req.getParameter("minPrice");
-		    String maxPrice = req.getParameter("maxPrice");
-		    String rating = req.getParameter("rating");
-		    String minReviews = req.getParameter("minReviews");
-		    String maxReviews = req.getParameter("maxReviews");
-		    String isBestSeller = req.getParameter("bestSeller");
-		    String orderBy = req.getParameter("orderBy");
-		    String productId = req.getParameter("productId");
-		    
-		    if (!ValidationUtil.isValidString(category) && !ValidationUtil.isValidString(minPrice) &&
-		            !ValidationUtil.isValidString(maxPrice) && !ValidationUtil.isValidString(rating) &&
-		            !ValidationUtil.isValidString(minReviews) && !ValidationUtil.isValidString(maxReviews) &&
-		            !ValidationUtil.isValidString(isBestSeller) && !ValidationUtil.isValidString(productId) &&
-		            (!ValidationUtil.isValidString(orderBy) || orderBy.equals("none"))) {
-		        resp.sendRedirect(req.getContextPath() + "/all_products");
-		        return;
-		    }
+		// Map for storing messages
+		Map<String, String> messages = new HashMap<>();
+		req.setAttribute("messages", messages);
 
-		    // Fetch filtered products from the database
-		    List<Products> filteredProducts = new ArrayList<>();
-			try {
-				filteredProducts = productsDao.getFilteredAndOrderedProducts(category, minPrice, maxPrice, rating, minReviews, maxReviews, isBestSeller, productId, orderBy);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		String category = req.getParameter("category");
+		String minPrice = req.getParameter("minPrice");
+		String maxPrice = req.getParameter("maxPrice");
+		String rating = req.getParameter("rating");
+		String minReviews = req.getParameter("minReviews");
+		String maxReviews = req.getParameter("maxReviews");
+		String isBestSeller = req.getParameter("bestSeller");
+		String orderBy = req.getParameter("orderBy");
+		String productId = req.getParameter("productId");
 
-		    // Pagination logic
-		    int page = 1;
-		    int pageSize = 20; // Number of products per page
+		if (!ValidationUtil.isValidString(category) && !ValidationUtil.isValidString(minPrice)
+				&& !ValidationUtil.isValidString(maxPrice) && !ValidationUtil.isValidString(rating)
+				&& !ValidationUtil.isValidString(minReviews) && !ValidationUtil.isValidString(maxReviews)
+				&& !ValidationUtil.isValidString(isBestSeller) && !ValidationUtil.isValidString(productId)
+				&& (!ValidationUtil.isValidString(orderBy) || orderBy.equals("none"))) {
+			resp.sendRedirect(req.getContextPath() + "/all_products");
+			return;
+		}
 
-		    if (req.getParameter("page") != null) {
-		        page = Integer.parseInt(req.getParameter("page"));
-		    }
+		// Fetch filtered products from the database
+		List<Products> filteredProducts = new ArrayList<>();
+		try {
+			filteredProducts = productsDao.getFilteredAndOrderedProducts(category, minPrice, maxPrice, rating,
+					minReviews, maxReviews, isBestSeller, productId, orderBy);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-		    int totalFilteredProducts = filteredProducts.size();
-		    int totalPages = (int) Math.ceil((double) totalFilteredProducts / pageSize);
+		// Pagination logic
+		int page = 1;
+		int pageSize = 20; // Number of products per page
 
+		if (req.getParameter("page") != null) {
+			page = Integer.parseInt(req.getParameter("page"));
+		}
 
-		    // Calculate offset for pagination
-		    int offset = (page - 1) * pageSize;
-		    int endIndex = Math.min(offset + pageSize, totalFilteredProducts);
+		int totalFilteredProducts = filteredProducts.size();
+		int totalPages = (int) Math.ceil((double) totalFilteredProducts / pageSize);
 
-		    // Get sublist of filtered products for current page
-		    List<Products> products = filteredProducts.subList(offset, endIndex);
+		// Calculate offset for pagination
+		int offset = (page - 1) * pageSize;
+		int endIndex = Math.min(offset + pageSize, totalFilteredProducts);
 
-		    // Retrieve categories
-		    Map<Integer, String> categories = new HashMap<>();
-		    try {
-		        categories = categoriesDao.getAllCategoriesMap();
-		    } catch (SQLException e) {
-		        e.printStackTrace();
-		        req.setAttribute("error", "There was an error retrieving the categories. Please try again.");
-		        resp.sendRedirect(req.getContextPath() + "/home_page");
-		        return;
-		    }
+		// Get sublist of filtered products for current page
+		List<Products> products = filteredProducts.subList(offset, endIndex);
 
-		    // Set attributes and forward to JSP
-		    req.setAttribute("products", products);
-		    req.setAttribute("categories", categories);
-		    req.setAttribute("page", page);
-		    req.setAttribute("totalPages", totalPages);
-		    
-		    req.setAttribute("category", category);
-		    req.setAttribute("minPrice", minPrice);
-		    req.setAttribute("maxPrice", maxPrice);
-		    req.setAttribute("rating", rating);
-		    req.setAttribute("minReviews", minReviews);
-		    req.setAttribute("maxReviews", maxReviews);
-		  
-		    req.setAttribute("orderBy", orderBy);
+		// Retrieve categories
+		Map<Integer, String> categories = new HashMap<>();
+		try {
+			categories = categoriesDao.getAllCategoriesMap();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			req.setAttribute("error", "There was an error retrieving the categories. Please try again.");
+			resp.sendRedirect(req.getContextPath() + "/home_page");
+			return;
+		}
 
-		    messages.put("success", "Displaying results for filtered products");
+		// Set attributes and forward to JSP
+		req.setAttribute("products", products);
+		req.setAttribute("categories", categories);
+		req.setAttribute("page", page);
+		req.setAttribute("totalPages", totalPages);
 
-		    req.getRequestDispatcher("/WEB-INF/jsp/FilteredProducts.jsp").forward(req, resp);
+		req.setAttribute("category", category);
+		req.setAttribute("minPrice", minPrice);
+		req.setAttribute("maxPrice", maxPrice);
+		req.setAttribute("rating", rating);
+		req.setAttribute("minReviews", minReviews);
+		req.setAttribute("maxReviews", maxReviews);
+
+		req.setAttribute("orderBy", orderBy);
+
+		messages.put("success", "Displaying results for filtered products");
+
+		req.getRequestDispatcher("/WEB-INF/jsp/FilteredProducts.jsp").forward(req, resp);
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-	    String username = SessionUtil.getUsername(req, resp);
+		String username = SessionUtil.getUsername(req, resp);
 
-	    if (username == null) {
-	        return;
-	    }
-
-	    // Map for storing messages
-	    Map<String, String> messages = new HashMap<>();
-	    req.setAttribute("messages", messages);
-
-	    String category = req.getParameter("category");
-	    String minPrice = req.getParameter("minPrice");
-	    String maxPrice = req.getParameter("maxPrice");
-	    String rating = req.getParameter("rating");
-	    String minReviews = req.getParameter("minReviews");
-	    String maxReviews = req.getParameter("maxReviews");
-	    String isBestSeller = req.getParameter("bestSeller");
-	    String productId = req.getParameter("productId");
-	    String orderBy = req.getParameter("orderBy");
-
-	    // Fetch filtered products from the database
-	    List<Products> filteredProducts = new ArrayList<>();
-		try {
-			filteredProducts = productsDao.getFilteredAndOrderedProducts(category, minPrice, maxPrice, rating, minReviews, maxReviews, isBestSeller, productId, orderBy);
-		} catch (SQLException e) {
-			e.printStackTrace();
-	        req.setAttribute("error", "There was an error retrieving the categories. Please try again.");
-	        resp.sendRedirect(req.getContextPath() + "/home_page");
-	        return;			
+		if (username == null) {
+			return;
 		}
 
-	    // Pagination logic
-	    int page = 1;
-	    int pageSize = 20; // Number of products per page
+		// Map for storing messages
+		Map<String, String> messages = new HashMap<>();
+		req.setAttribute("messages", messages);
 
-	    if (req.getParameter("page") != null) {
-	        page = Integer.parseInt(req.getParameter("page"));
-	    }
+		String category = req.getParameter("category");
+		String minPrice = req.getParameter("minPrice");
+		String maxPrice = req.getParameter("maxPrice");
+		String rating = req.getParameter("rating");
+		String minReviews = req.getParameter("minReviews");
+		String maxReviews = req.getParameter("maxReviews");
+		String isBestSeller = req.getParameter("bestSeller");
+		String productId = req.getParameter("productId");
+		String orderBy = req.getParameter("orderBy");
 
-	    int totalFilteredProducts = filteredProducts.size();
-	    int totalPages = (int) Math.ceil((double) totalFilteredProducts / pageSize);
+		// Fetch filtered products from the database
+		List<Products> filteredProducts = new ArrayList<>();
+		try {
+			filteredProducts = productsDao.getFilteredAndOrderedProducts(category, minPrice, maxPrice, rating,
+					minReviews, maxReviews, isBestSeller, productId, orderBy);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			req.setAttribute("error", "There was an error retrieving the categories. Please try again.");
+			resp.sendRedirect(req.getContextPath() + "/home_page");
+			return;
+		}
 
-	    // Calculate offset for pagination
-	    int offset = (page - 1) * pageSize;
-	    int endIndex = Math.min(offset + pageSize, totalFilteredProducts);
+		// Pagination logic
+		int page = 1;
+		int pageSize = 20; // Number of products per page
 
-	    // Get sublist of filtered products for current page
-	    List<Products> products = filteredProducts.subList(offset, endIndex);
+		if (req.getParameter("page") != null) {
+			page = Integer.parseInt(req.getParameter("page"));
+		}
 
-	    // Retrieve categories
-	    Map<Integer, String> categories = new HashMap<>();
-	    try {
-	        categories = categoriesDao.getAllCategoriesMap();
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        req.setAttribute("error", "There was an error retrieving the categories. Please try again.");
-	        resp.sendRedirect(req.getContextPath() + "/home_page");
-	        return;
-	    }
+		int totalFilteredProducts = filteredProducts.size();
+		int totalPages = (int) Math.ceil((double) totalFilteredProducts / pageSize);
 
-	    // Set attributes and forward to JSP
-	    req.setAttribute("products", products);
-	    req.setAttribute("categories", categories);
-	    req.setAttribute("page", page);
-	    req.setAttribute("totalPages", totalPages);
-	    req.setAttribute("category", category);
-	    req.setAttribute("minPrice", minPrice);
-	    req.setAttribute("maxPrice", maxPrice);
-	    req.setAttribute("rating", rating);
-	    req.setAttribute("minReviews", minReviews);
-	    req.setAttribute("maxReviews", maxReviews);
-	    req.setAttribute("orderBy", orderBy);
+		// Calculate offset for pagination
+		int offset = (page - 1) * pageSize;
+		int endIndex = Math.min(offset + pageSize, totalFilteredProducts);
 
-	    messages.put("success", "Displaying results for filtered products");
+		// Get sublist of filtered products for current page
+		List<Products> products = filteredProducts.subList(offset, endIndex);
 
-	    req.getRequestDispatcher("/WEB-INF/jsp/FilteredProducts.jsp").forward(req, resp);
+		// Retrieve categories
+		Map<Integer, String> categories = new HashMap<>();
+		try {
+			categories = categoriesDao.getAllCategoriesMap();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			req.setAttribute("error", "There was an error retrieving the categories. Please try again.");
+			resp.sendRedirect(req.getContextPath() + "/home_page");
+			return;
+		}
+
+		// Set attributes and forward to JSP
+		req.setAttribute("products", products);
+		req.setAttribute("categories", categories);
+		req.setAttribute("page", page);
+		req.setAttribute("totalPages", totalPages);
+		req.setAttribute("category", category);
+		req.setAttribute("minPrice", minPrice);
+		req.setAttribute("maxPrice", maxPrice);
+		req.setAttribute("rating", rating);
+		req.setAttribute("minReviews", minReviews);
+		req.setAttribute("maxReviews", maxReviews);
+		req.setAttribute("orderBy", orderBy);
+
+		messages.put("success", "Displaying results for filtered products");
+
+		req.getRequestDispatcher("/WEB-INF/jsp/FilteredProducts.jsp").forward(req, resp);
 	}
 }
