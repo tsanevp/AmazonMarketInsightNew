@@ -88,7 +88,7 @@ public class CreateGroup extends HttpServlet {
             groupMembersDao.create(new GroupMembers(newGroup.getGroupId(), username, GroupMembers.Roles.OWNER));
 
             // Redirect to the AllGroups servlet to display all groups
-            resp.sendRedirect(req.getContextPath() + "/all_groups");
+            resp.sendRedirect(req.getContextPath() + "/my_groups?view=owned");
         } catch (NumberFormatException | SQLException e) {
             e.printStackTrace();
             // Handle database error

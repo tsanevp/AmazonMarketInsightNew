@@ -24,10 +24,12 @@ import javax.servlet.http.HttpSession;
 public class Login extends HttpServlet {
 
 	protected UsersDao usersDao;
+	protected AdministratorsDao administratorsDao;
 
 	@Override
 	public void init() throws ServletException {
 		usersDao = UsersDao.getInstance();
+		administratorsDao = AdministratorsDao.getInstance();
 	}
 
 	@Override
@@ -58,11 +60,13 @@ public class Login extends HttpServlet {
 
 		// Authenticate user, check credientials against database
 		boolean isAuthenticated = authenticateUser(username, password, messages);
+		boolean isAdmin = isAdmin(username);
 
 		if (isAuthenticated) {
 			// Create a user session
 			HttpSession session = req.getSession();
 			session.setAttribute("username", username);
+			session.setAttribute("isAdmin", isAdmin);
 			session.setMaxInactiveInterval(30 * 60);
 
 			// Redirect user to home page
@@ -100,6 +104,24 @@ public class Login extends HttpServlet {
 
 			// Return true, user exists and passwords match
 			return true;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+	
+	/**
+	 * Authenticates the current user is an admin.
+	 *
+	 * @param username - The user's username.
+	 * @return Whether the user is a site admin, as a boolean.
+	 */
+	private boolean isAdmin(String username) {
+		try {
+			// Attempt to fetch the user from the database
+			return administratorsDao.isAdmin(username);
 
 		} catch (SQLException e) {
 			e.printStackTrace();

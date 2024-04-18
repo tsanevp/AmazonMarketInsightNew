@@ -129,6 +129,74 @@ public class GroupMembersDao {
 		return groupMembers;
 	}
 
+	public boolean isUserMemberOfGroup(String username, int groupId) throws SQLException {
+		String selectGroupMember = "SELECT * FROM GroupMembers WHERE GroupId=? AND UserName=? AND Role!='Owner';";
+		Connection connection = null;
+		PreparedStatement selectStmt = null;
+		ResultSet results = null;
+		
+		try {
+			connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(selectGroupMember);
+			selectStmt.setInt(1, groupId);
+			selectStmt.setString(2, username);
+			results = selectStmt.executeQuery();
+
+			if (results.next()) {
+				return true;
+			}
+			
+			return false;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
+			if (selectStmt != null) {
+				selectStmt.close();
+			}
+			if (results != null) {
+				results.close();
+			}
+		}
+	}
+	
+	public boolean isUserOwnerOfGroup(String username, int groupId) throws SQLException {
+		String selectGroupMember = "SELECT * FROM GroupMembers WHERE GroupId=? AND UserName=? AND Role='Owner';";
+		Connection connection = null;
+		PreparedStatement selectStmt = null;
+		ResultSet results = null;
+		
+		try {
+			connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(selectGroupMember);
+			selectStmt.setInt(1, groupId);
+			selectStmt.setString(2, username);
+			results = selectStmt.executeQuery();
+
+			if (results.next()) {
+				return true;
+			}
+			
+			return false;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
+			if (selectStmt != null) {
+				selectStmt.close();
+			}
+			if (results != null) {
+				results.close();
+			}
+		}
+	}
+	
 	public GroupMembers updateRole(GroupMembers groupMember, GroupMembers.Roles newRole) throws SQLException {
 		String updateGroupMember = "UPDATE GroupMembers SET Role=? WHERE GroupId=? AND UserName=?;";
 		Connection connection = null;

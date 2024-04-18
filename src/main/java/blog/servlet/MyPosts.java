@@ -3,7 +3,6 @@ package blog.servlet;
 import blog.dal.*;
 import blog.model.*;
 import blog.util.SessionUtil;
-import blog.util.ValidationUtil;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -19,8 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet("/user_posts")
-public class UserPosts extends HttpServlet {
+@WebServlet("/my_posts")
+public class MyPosts extends HttpServlet {
 
 	protected UsersDao usersDao;
 	protected PostsDao postsDao;
@@ -43,20 +42,12 @@ public class UserPosts extends HttpServlet {
 		Map<String, String> messages = new HashMap<String, String>();
 		req.setAttribute("messages", messages);
 
-		String userToView = req.getParameter("username");
-		
-		if (!ValidationUtil.isValidString(userToView)) {
-			messages.put("error", "No username to view was given.");
-			resp.sendRedirect(req.getContextPath() + "/all_users");
-			return;
-		}
-		
 		Users user = null;
 		List<Posts> posts = new ArrayList<>();
 
 		try {
-			user = usersDao.getUserFromUserName(userToView);
-			posts = postsDao.getPostsFromUserName(userToView);
+			user = usersDao.getUserFromUserName(username);
+			posts = postsDao.getPostsFromUserName(username);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new IOException(e);
@@ -85,7 +76,7 @@ public class UserPosts extends HttpServlet {
 		String postIdStr = req.getParameter("postId");
 		if (postIdStr == null || postIdStr.trim().isEmpty()) {
 			messages.put("error", "No postId was given.");
-			resp.sendRedirect(req.getContextPath() + "/all_users");
+			resp.sendRedirect(req.getContextPath() + "/my_posts");
 			return;
 		}
 		
@@ -95,7 +86,7 @@ public class UserPosts extends HttpServlet {
 		    postId = Integer.parseInt(postIdStr);
 		} catch (NumberFormatException e) {
 			messages.put("error", "You provided an invalid post id");
-			resp.sendRedirect(req.getContextPath() + "/all_users");
+			resp.sendRedirect(req.getContextPath() + "/my_posts");
 			return;
 		}
 		
@@ -104,12 +95,12 @@ public class UserPosts extends HttpServlet {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			messages.put("error", "Error deleting the post");
-			resp.sendRedirect(req.getContextPath() + "/all_users");
+			resp.sendRedirect(req.getContextPath() + "/my_posts");
 			return;
 		}
 		
 		messages.put("success", "Deleted postId: " + postId);
 
-		resp.sendRedirect(req.getContextPath() + "/user_posts");
+		resp.sendRedirect(req.getContextPath() + "/my_posts");
 		}
 }

@@ -19,16 +19,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet("/user_posts")
-public class UserPosts extends HttpServlet {
+@WebServlet("/user_comments")
+public class UserComments extends HttpServlet {
 
 	protected UsersDao usersDao;
-	protected PostsDao postsDao;
+	protected PostCommentsDao commentsDao;
 
 	@Override
 	public void init() throws ServletException {
 		usersDao = UsersDao.getInstance();
-		postsDao = PostsDao.getInstance();
+		commentsDao = PostCommentsDao.getInstance();
 	}
 
 	@Override
@@ -44,31 +44,31 @@ public class UserPosts extends HttpServlet {
 		req.setAttribute("messages", messages);
 
 		String userToView = req.getParameter("username");
-		
+
 		if (!ValidationUtil.isValidString(userToView)) {
 			messages.put("error", "No username to view was given.");
 			resp.sendRedirect(req.getContextPath() + "/all_users");
 			return;
 		}
-		
+
 		Users user = null;
-		List<Posts> posts = new ArrayList<>();
+		List<PostComments> comments = new ArrayList<>();
 
 		try {
 			user = usersDao.getUserFromUserName(userToView);
-			posts = postsDao.getPostsFromUserName(userToView);
+			comments = commentsDao.getCommentsFromUserName(userToView);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new IOException(e);
 		}
 
 		req.setAttribute("user", user);
-		req.setAttribute("posts", posts);
+		req.setAttribute("comments", comments);
 
 		// Just render the JSP.
-		req.getRequestDispatcher("/WEB-INF/jsp/UserPosts.jsp").forward(req, resp);
+		req.getRequestDispatcher("/WEB-INF/jsp/UserComments.jsp").forward(req, resp);
 	}
-	
+
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String username = SessionUtil.getUsername(req, resp);
@@ -81,35 +81,36 @@ public class UserPosts extends HttpServlet {
 		Map<String, String> messages = new HashMap<String, String>();
 		req.setAttribute("messages", messages);
 
-		
-		String postIdStr = req.getParameter("postId");
-		if (postIdStr == null || postIdStr.trim().isEmpty()) {
+		String commentIdStr = req.getParameter("deleteCommentId");
+		String userWhoPostedComment = req.getParameter("userWhoPostedComment");
+
+		if (!ValidationUtil.isValidString(commentIdStr) || !ValidationUtil.isValidString(userWhoPostedComment)) {
 			messages.put("error", "No postId was given.");
 			resp.sendRedirect(req.getContextPath() + "/all_users");
 			return;
 		}
-		
-		int postId = -1;
-		
+
+		int commentId = -1;
+
 		try {
-		    postId = Integer.parseInt(postIdStr);
+			commentId = Integer.parseInt(commentIdStr);
 		} catch (NumberFormatException e) {
-			messages.put("error", "You provided an invalid post id");
-			resp.sendRedirect(req.getContextPath() + "/all_users");
+			messages.put("error", "You provided an invalid comment id");
+			resp.sendRedirect(req.getContextPath() + "/user_comments?username=" + userWhoPostedComment);
 			return;
 		}
+
 		
 		try {
-			postsDao.delete(postId);
+			commentsDao.delete(commentId);
+			resp.setContentType("text/plain");
+			resp.getWriter().write("Successfully deleted user's comment.");
+			return;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			messages.put("error", "Error deleting the post");
-			resp.sendRedirect(req.getContextPath() + "/all_users");
+			messages.put("error", "Error deleting the comment");
+			resp.sendRedirect(req.getContextPath() + "/user_comments?username=" + userWhoPostedComment);
 			return;
 		}
-		
-		messages.put("success", "Deleted postId: " + postId);
-
-		resp.sendRedirect(req.getContextPath() + "/user_posts");
-		}
+	}
 }

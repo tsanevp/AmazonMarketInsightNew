@@ -170,21 +170,21 @@ public class PersonsDao {
 	/**
 	 * Delete the Persons instance. This runs a DELETE statement.
 	 */
-	public Persons delete(Persons person) throws SQLException {
+	public boolean delete(String username) throws SQLException {
 		String deletePerson = "DELETE FROM Persons WHERE UserName=?;";
 		Connection connection = null;
 		PreparedStatement deleteStmt = null;
 		try {
 			connection = connectionManager.getConnection();
 			deleteStmt = connection.prepareStatement(deletePerson);
-			deleteStmt.setString(1, person.getUserName());
+			deleteStmt.setString(1, username);
 			deleteStmt.executeUpdate();
 
 			// Return null so the caller can no longer operate on the Persons instance.
-			return null;
+			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw e;
+			return false;
 		} finally {
 			if (connection != null) {
 				connection.close();

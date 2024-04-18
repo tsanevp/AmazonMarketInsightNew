@@ -66,7 +66,7 @@ a:hover {
 	<jsp:include page="Header.jsp" />
 
 	<div class="container posts-container">
-		<h1>All Posts</h1>
+		<h1>${title}</h1>
 		<table class="table">
 			<thead class="table-light">
 				<tr>

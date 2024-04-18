@@ -41,7 +41,7 @@
 	<div class="container post-container">
 		<div class="row">
 			<div class="col">
-				<h1 class="mb-4">My Posts</h1>
+				<h1 class="mb-4">${user.getUserName()}'s Posts</h1>
 			</div>
 			<div class="col text-end">
 				<a href="create_post" class="btn btn-primary">Create New

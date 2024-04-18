@@ -290,25 +290,25 @@ public class UsersDao extends PersonsDao {
 	/**
 	 * Delete the Users instance. This runs a DELETE statement.
 	 */
-	public Users delete(Users user) throws SQLException {
+	public boolean delete(String username) throws SQLException {
 		String deleteBlogUser = "DELETE FROM Users WHERE UserName=?;";
 		Connection connection = null;
 		PreparedStatement deleteStmt = null;
 		try {
 			connection = connectionManager.getConnection();
 			deleteStmt = connection.prepareStatement(deleteBlogUser);
-			deleteStmt.setString(1, user.getUserName());
+			deleteStmt.setString(1, username);
 			int affectedRows = deleteStmt.executeUpdate();
 			if (affectedRows == 0) {
-				throw new SQLException("No records available to delete for UserName=" + user.getUserName());
+				throw new SQLException("No records available to delete for UserName=" + username);
 			}
 
-			super.delete(user);
+			super.delete(username);
 
-			return null;
+			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw e;
+			return false;
 		} finally {
 			if (connection != null) {
 				connection.close();

@@ -56,11 +56,21 @@
 						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 							<li><a class="dropdown-item" href="all_groups">All
 									Groups</a></li>
-							<li><a class="dropdown-item" href="#">Joined Groups</a></li>
-							<li><a class="dropdown-item" href="#">My Groups</a></li>
+							<li><a class="dropdown-item" href="my_groups?view=joined">Joined Groups</a></li>
+							<li><a class="dropdown-item" href="my_groups?view=owned">My Groups</a></li>
 							<li><a class="dropdown-item" href="create_group">Create
 									Group</a></li>
 						</ul></li>
+						<c:if test="${sessionScope.isAdmin}">
+                        <li class="dropdown"><a href="#"
+                            class="nav-link px-2 link-body-emphasis dropdown-toggle"
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">Admin Actions
+                        </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="all_users">Manage Users</a></li>
+                            </ul>
+                        </li>
+                    </c:if>
 				</ul>
 
 				<form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search"
@@ -77,7 +87,7 @@
 						class="rounded-circle">
 					</a>
 					<ul class="dropdown-menu text-small" style="">
-						<li><a class="dropdown-item" href="#">New post...</a></li>
+						<li><a class="dropdown-item" href="create_post">New post...</a></li>
 						<li><a class="dropdown-item" href="my_posts">My posts</a></li>
 						<li><a class="dropdown-item" href="my_wishlist">My
 								wishlist</a></li>

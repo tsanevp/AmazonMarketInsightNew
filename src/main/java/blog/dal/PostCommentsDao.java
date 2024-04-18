@@ -169,6 +169,51 @@ public class PostCommentsDao {
 	}
 	
 	/**
+	 * Get the Post's comments records by fetching it from your MySQL instance. This runs a
+	 * SELECT statement and returns a list of comments for single Posts instance.
+	 */
+	public List<PostComments> getCommentsFromUserName(String username) throws SQLException {
+		List<PostComments> postComments = new ArrayList<>();
+
+		String selectComments = "SELECT PostCommentId,Created,Comment,UpVotes,DownVotes,UserName,PostId FROM PostComments WHERE UserName=?;";
+		Connection connection = null;
+		PreparedStatement selectStmt = null;
+		ResultSet results = null;
+		try {
+			connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(selectComments);
+			selectStmt.setString(1, username);
+
+			results = selectStmt.executeQuery();
+			while (results.next()) {
+				int postCommentId = results.getInt("PostCommentId");
+				Date created = new Date(results.getTimestamp("Created").getTime());
+				String comment = results.getString("Comment");
+				int upVotes = results.getInt("UpVotes");
+				int downVotes = results.getInt("DownVotes");
+				String userName = results.getString("UserName");
+				int resultPostId = results.getInt("PostId");
+
+				postComments.add(new PostComments(postCommentId, created, comment, upVotes, downVotes, userName, resultPostId));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
+			if (selectStmt != null) {
+				selectStmt.close();
+			}
+			if (results != null) {
+				results.close();
+			}
+		}
+		return postComments;
+	}
+	
+	/**
 	 * Update the LastName of the PostComments instance. This runs a UPDATE
 	 * statement.
 	 */
@@ -202,14 +247,14 @@ public class PostCommentsDao {
 	/**
 	 * Delete the PostComments instance. This runs a DELETE statement.
 	 */
-	public PostComments delete(PostComments postComment) throws SQLException {
+	public PostComments delete(int commentId) throws SQLException {
 		String deletePost = "DELETE FROM PostComments WHERE PostCommentId=?;";
 		Connection connection = null;
 		PreparedStatement deleteStmt = null;
 		try {
 			connection = connectionManager.getConnection();
 			deleteStmt = connection.prepareStatement(deletePost);
-			deleteStmt.setInt(1, postComment.getPostCommentId());
+			deleteStmt.setInt(1, commentId);
 			deleteStmt.executeUpdate();
 
 			// Return null so the caller can no longer operate on the PostComments instance.

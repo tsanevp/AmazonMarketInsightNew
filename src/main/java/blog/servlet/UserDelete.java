@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@SuppressWarnings("serial")
 @WebServlet("/userdelete")
 public class UserDelete extends HttpServlet {
 
@@ -49,7 +50,7 @@ public class UserDelete extends HttpServlet {
 			// Delete the BlogUser.
 			try {
 				Users user = usersDao.getUserFromUserName(userName);
-				user = usersDao.delete(user);
+				usersDao.delete(user.getUserName());
 				// Update the message.
 				if (user == null) {
 					messages.put("title", "Successfully deleted " + userName);

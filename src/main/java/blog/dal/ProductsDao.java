@@ -1,13 +1,16 @@
 package blog.dal;
 
 import blog.model.*;
+import blog.util.ValidationUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProductsDao {
 	protected ConnectionManager connectionManager;
@@ -196,36 +199,36 @@ public class ProductsDao {
 	}
 
 	public List<Products> getAllProductsByPage(int offset, int pageSize) throws SQLException {
-	    List<Products> productList = new ArrayList<>();
-	    String selectAllProducts = "SELECT * FROM Products LIMIT ?, ?;";
-	    Connection connection = null;
-	    PreparedStatement selectStmt = null;
-	    ResultSet resultSet = null;
-	    try {
-	        connection = connectionManager.getConnection();
-	        selectStmt = connection.prepareStatement(selectAllProducts);
-	        selectStmt.setInt(1, offset);
-	        selectStmt.setInt(2, pageSize);
-	        resultSet = selectStmt.executeQuery();
-	        while (resultSet.next()) {
-	            Products product = parseProduct(resultSet);
-	            productList.add(product);
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        throw e;
-	    } finally {
-	        if (connection != null) {
-	            connection.close();
-	        }
-	        if (selectStmt != null) {
-	            selectStmt.close();
-	        }
-	        if (resultSet != null) {
-	            resultSet.close();
-	        }
-	    }
-	    return productList;
+		List<Products> productList = new ArrayList<>();
+		String selectAllProducts = "SELECT * FROM Products LIMIT ?, ?;";
+		Connection connection = null;
+		PreparedStatement selectStmt = null;
+		ResultSet resultSet = null;
+		try {
+			connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(selectAllProducts);
+			selectStmt.setInt(1, offset);
+			selectStmt.setInt(2, pageSize);
+			resultSet = selectStmt.executeQuery();
+			while (resultSet.next()) {
+				Products product = parseProduct(resultSet);
+				productList.add(product);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
+			if (selectStmt != null) {
+				selectStmt.close();
+			}
+			if (resultSet != null) {
+				resultSet.close();
+			}
+		}
+		return productList;
 	}
 
 	public int getTotalProductsCount() throws SQLException {
@@ -291,6 +294,149 @@ public class ProductsDao {
 			}
 		}
 		return products;
+	}
+	
+	public List<Products> getBestProducts() throws SQLException {
+		List<Products> bestProducts = new ArrayList<>();
+
+		String selectPost = "SELECT ProductId, Stars, BestSeller, Price FROM Products WHERE Stars>='4.5' AND BestSeller='1' AND Price BETWEEN '25.00' AND '100.00' ORDER BY Price ASC, Stars DESC LIMIT 9;";
+		Connection connection = null;
+		PreparedStatement selectStmt = null;
+		ResultSet results = null;
+		try {
+			connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(selectPost);
+
+			results = selectStmt.executeQuery();
+			while (results.next()) {
+				String productId = results.getString("ProductId");
+				double stars = results.getDouble("Stars");
+				double price = results.getDouble("Price");
+				boolean bestSeller = results.getBoolean("BestSeller");
+
+				bestProducts.add(new Products(productId, stars, price, bestSeller));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
+			if (selectStmt != null) {
+				selectStmt.close();
+			}
+			if (results != null) {
+				results.close();
+			}
+		}
+		return bestProducts;
+	}
+
+
+	public List<Products> getFilteredAndOrderedProducts(String category, String minPrice, String maxPrice,
+			String rating, String minReviews, String maxReviews, String isBestSeller, String orderBy) throws SQLException {
+		List<Products> productList = new ArrayList<>();
+		StringBuilder queryBuilder = new StringBuilder("SELECT * FROM Products WHERE 1=1");
+
+		// Add filters based on the provided criteria
+		if (ValidationUtil.isValidString(category)) {
+			queryBuilder.append(" AND CategoryId = ?");
+		}
+
+		// Add price filter
+		if (ValidationUtil.isValidString(minPrice) && ValidationUtil.isValidString(maxPrice)) {
+			queryBuilder.append(" AND Price BETWEEN ? AND ?");
+		} else if (ValidationUtil.isValidString(minPrice)) {
+			queryBuilder.append(" AND Price >= ?");
+		} else if (ValidationUtil.isValidString(maxPrice)) {
+			queryBuilder.append(" AND Price <= ?");
+		}
+
+		// Add rating filter
+		if (ValidationUtil.isValidString(rating)) {
+			queryBuilder.append(" AND Stars >= ?");
+		}
+
+		// Add reviews filter
+		if (ValidationUtil.isValidString(minReviews) && ValidationUtil.isValidString(maxReviews)) {
+			queryBuilder.append(" AND Reviews BETWEEN ? AND ?");
+		} else if (ValidationUtil.isValidString(minReviews)) {
+			queryBuilder.append(" AND Reviews >= ?");
+		} else if (ValidationUtil.isValidString(maxReviews)) {
+			queryBuilder.append(" AND Reviews <= ?");
+		}
+		
+		// Add reviews filter
+		if (ValidationUtil.isValidString(isBestSeller)) {
+			if (isBestSeller.equals("true")) {
+				queryBuilder.append(" AND BestSeller = '1'");				
+			} else {
+				queryBuilder.append(" AND BestSeller = '0'");				
+			}
+		}
+
+		// Append ordering condition
+		if (orderBy != null && !orderBy.isEmpty()) {
+			if (orderBy.equals("asc")) {
+				queryBuilder.append(" ORDER BY Price ASC"); // Order by price ascending
+			} else if (orderBy.equals("desc")) {
+				queryBuilder.append(" ORDER BY Price DESC"); // Order by price descending
+			}
+		}
+
+		String query = queryBuilder.toString();
+		Connection connection = null;
+		PreparedStatement selectStmt = null;
+		ResultSet resultSet = null;
+		try {
+			connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(query);
+
+			int parameterIndex = 1;
+			if (ValidationUtil.isValidString(category)) {
+				selectStmt.setString(parameterIndex++, category);
+			}
+			if (ValidationUtil.isValidString(minPrice)) {
+				selectStmt.setDouble(parameterIndex++, Double.parseDouble(minPrice));
+			}
+			if (ValidationUtil.isValidString(maxPrice)) {
+				selectStmt.setDouble(parameterIndex++, Double.parseDouble(maxPrice));
+			}
+			if (ValidationUtil.isValidString(rating)) {
+				selectStmt.setInt(parameterIndex++, Integer.parseInt(rating));
+			}
+			if (ValidationUtil.isValidString(minReviews)) {
+				selectStmt.setInt(parameterIndex++, Integer.parseInt(minReviews));
+			}
+			if (ValidationUtil.isValidString(maxReviews)) {
+				selectStmt.setInt(parameterIndex++, Integer.parseInt(maxReviews));
+			}
+
+			resultSet = selectStmt.executeQuery();
+			while (resultSet.next()) {
+				Products product = parseProduct(resultSet);
+				productList.add(product);
+			}
+		} catch (SQLException | NumberFormatException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			try {
+				if (connection != null) {
+					connection.close();
+				}
+				if (selectStmt != null) {
+					selectStmt.close();
+				}
+				if (resultSet != null) {
+					resultSet.close();
+				}
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
+		}
+		return productList;
 	}
 
 	private Products parseProduct(ResultSet resultSet) throws SQLException {

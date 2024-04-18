@@ -3,6 +3,7 @@ package blog.servlet;
 import blog.dal.*;
 import blog.model.*;
 import blog.util.SessionUtil;
+import blog.util.ValidationUtil;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -56,9 +57,17 @@ public class AllPosts extends HttpServlet {
 		req.setAttribute("messages", messages);
 
 		List<Posts> posts = new ArrayList<Posts>();
-
+		String productId = req.getParameter("productId");
+		
 		try {
-			posts = postsDao.getAllPosts();
+			if (ValidationUtil.isValidString(productId)) {
+				posts = postsDao.getPostsFromProductId(productId);
+				req.setAttribute("title", "Posts For Product " + productId);
+
+			} else {
+				posts = postsDao.getAllPosts();
+				req.setAttribute("title", "All Posts");
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new IOException(e);

@@ -1,9 +1,13 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>All Products</title>
+<title>Filtered Products</title>
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
 	rel="stylesheet">
@@ -103,7 +107,7 @@ a:hover {
 </style>
 </head>
 <body>
-	<%@ include file="Header.jsp"%>
+	<jsp:include page="Header.jsp" />
 
 	<div class="box">
 		<h1>All Products</h1>
@@ -114,10 +118,17 @@ a:hover {
 					<!-- Category filter -->
 					<div class="col-md-3">
 						<label for="categoryFilter" class="form-label">Category:</label> <select
-							name="category" class="form-select" id="categoryFilter">
-							<option value="">All Categories</option>
-							<c:forEach items="${categories}" var="category">
-								<option value="${category.key}">${category.value}</option>
+							class="form-select" id="categoryFilter" name="category">
+							<c:choose>
+								<c:when test="${category != null}">
+									<option value="${category}">${category}</option>
+								</c:when>
+								<c:otherwise>
+									<option value="">All Categories</option>
+								</c:otherwise>
+							</c:choose>
+							<c:forEach items="${categories}" var="cat">
+								<option value="${cat.key}">${cat.value}</option>
 							</c:forEach>
 						</select>
 					</div>
@@ -125,18 +136,32 @@ a:hover {
 					<div class="col-md-3">
 						<label for="minPrice" class="form-label">Min Price:</label> <input
 							type="number" class="form-control" id="minPrice" name="minPrice"
-							min="0">
+							min="0" value="${minPrice != null ? minPrice : ''}">
 					</div>
 					<div class="col-md-3">
 						<label for="maxPrice" class="form-label">Max Price:</label> <input
 							type="number" class="form-control" id="maxPrice" name="maxPrice"
-							min="0">
+							min="${minPrice}" value="${maxPrice != null ? maxPrice : ''}">
 					</div>
 					<!-- Rating filter -->
 					<div class="col-md-3">
 						<label for="ratingFilter" class="form-label">Rating:</label> <select
 							class="form-select" id="ratingFilter" name="rating">
-							<option value="">Any Rating</option>
+							<c:choose>
+								<c:when test="${rating == 5}">
+									<option value="${rating}">${rating}Stars</option>
+								</c:when>
+								<c:when test="${rating == 1}">
+									<option value="${rating}">${rating}StarandUp</option>
+								</c:when>
+								<c:when test="${rating != null && rating.length() != 0}">
+									<option value="${rating}">${rating}StarsandUp</option>
+								</c:when>
+								<c:otherwise>
+									<option value="">Any Rating</option>
+								</c:otherwise>
+							</c:choose>
+
 							<option value="5">5 Stars</option>
 							<option value="4">4 Stars and Up</option>
 							<option value="3">3 Stars and Up</option>
@@ -148,34 +173,70 @@ a:hover {
 					<div class="col-md-3">
 						<label for="minReviews" class="form-label">Min Reviews:</label> <input
 							type="number" class="form-control" id="minReviews"
-							name="minReviews" min="0">
+							name="minReviews" min="0"
+							value="${minReviews != null ? minReviews : ''}">
 					</div>
 					<div class="col-md-3">
 						<label for="maxReviews" class="form-label">Max Reviews:</label> <input
 							type="number" class="form-control" id="maxReviews"
-							name="maxReviews" min="0">
+							name="maxReviews" min="0"
+							value="${maxReviews != null ? maxReviews : ''}">
 					</div>
 					<!-- Bestseller filter -->
 					<div class="col-md-3">
 						<label for="bestsellerFilter" class="form-label">Bestseller:</label>
 						<select class="form-select" id="bestsellerFilter"
 							name="bestSeller">
-							<option value="">Either</option>
-							<option value="true">Yes</option>
-							<option value="false">No</option>
+							<c:choose>
+								<c:when test="${bestseller == 'true'}">
+									<option value="true">Yes</option>
+									<option value="">Either</option>
+									<option value="false">No</option>
+								</c:when>
+								<c:when test="${bestseller == 'false'}">
+									<option value="false">No</option>
+									<option value="">Either</option>
+									<option value="true">Yes</option>
+								</c:when>
+								<c:when test="${rating != null && rating.length() != 0}">
+									<option value="${rating}">${rating}StarsandUp</option>
+								</c:when>
+								<c:otherwise>
+									<option value="">Either</option>
+									<option value="true">Yes</option>
+									<option value="false">No</option>
+								</c:otherwise>
+							</c:choose>
+
 						</select>
 					</div>
-					<!-- Order by filter -->
+					<!-- Apply filter button -->
 					<div class="col-md-3">
-						<label for="orderBy" class="form-label">Order of Price
-							Filter :</label> <select class="form-select" id="orderBy" name="orderBy">
-							<option value="none"></option>
-							<option value="asc">Ascending</option>
-							<option value="desc">Descending</option>
+						<label for="orderBy" class="form-label">Order of All
+							Filters :</label> <select class="form-select" id="orderBy" name="orderBy">
+							<c:choose>
+								<c:when test="${orderBy == 'asc'}">
+									<option value="asc">Ascending</option>
+									<option value="desc">Descending</option>
+
+								</c:when>
+								<c:when test="${orderBy == 'desc'}">
+									<option value="desc">Descending</option>
+									<option value="asc">Ascending</option>
+
+								</c:when>
+								<c:otherwise>
+									<option value="none"></option>
+									<option value="asc">Ascending</option>
+									<option value="desc">Descending</option>
+								</c:otherwise>
+							</c:choose>
 						</select>
 					</div>
 					<!-- Apply filter button -->
 					<div class="col-md-3 mt-4">
+						<!-- <button type="button" class="btn btn-primary"
+							onclick="applyFilters()">Apply Filters</button> -->
 						<button type="submit" class="btn btn-primary">Apply
 							Filters</button>
 						<button type="button" class="btn btn-secondary"
@@ -245,7 +306,8 @@ a:hover {
 								<ul class="pagination-list">
 									<c:forEach begin="1" end="${totalPages}" var="pageNum">
 										<li class="page-item ${pageNum == page ? 'active' : ''}">
-											<a class="page-link" href="?page=${pageNum}">${pageNum}</a>
+											<a class="page-link"
+											href="?page=${pageNum}&category=${category}&minPrice=${minPrice}&maxPrice=${maxPrice}&rating=${rating}&minReviews=${minReviews}&maxReviews=${maxReviews}&orderBy=${orderBy}">${pageNum}</a>
 										</li>
 									</c:forEach>
 								</ul>
@@ -304,7 +366,6 @@ a:hover {
 			var rating = $('#ratingFilter').val();
 			var minReviews = $('#minReviews').val();
 			var maxReviews = $('#maxReviews').val();
-			var bestseller = $('#bestsellerFilter').val();
 			var orderBy = $('#orderBy').val();
 
 			$.ajax({
@@ -317,11 +378,10 @@ a:hover {
 					rating : rating,
 					minReviews : minReviews,
 					maxReviews : maxReviews,
-					bestseller : bestseller,
 					orderBy : orderBy
 				},
 				success : function(response) {
-					$('#filteredProductsTableBody').html(response);
+					$('#productList').html(response);
 				},
 				error : function(xhr, status, error) {
 					console.error(error);
@@ -336,12 +396,28 @@ a:hover {
 			$('#ratingFilter').val('');
 			$('#minReviews').val('');
 			$('#maxReviews').val('');
-			$('#bestsellerFilter').val('');
-			$('#orderBy').val('');
 
 			// Reload products without filters
+			// applyFilters();
 			window.location.href = "all_products";
+
 		}
+
+		// Get references to the min and max price inputs
+		var minPriceInput = document.getElementById("minPrice");
+		var maxPriceInput = document.getElementById("maxPrice");
+
+		// Add event listener to the min price input to update the min attribute of the max price input
+		minPriceInput.addEventListener("input", function() {
+			// Parse the min price input value as a number
+			var minPriceValue = parseFloat(minPriceInput.value);
+			// Update the min attribute of the max price input
+			maxPriceInput.min = minPriceValue;
+			// If the max price input value is less than the min price input value, reset its value
+			if (parseFloat(maxPriceInput.value) < minPriceValue) {
+				maxPriceInput.value = minPriceValue;
+			}
+		});
 	</script>
 </body>
 </html>

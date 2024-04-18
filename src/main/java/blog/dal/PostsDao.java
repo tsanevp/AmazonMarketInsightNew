@@ -10,7 +10,9 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Data access object (DAO) class to interact with the underlying Posts table in
@@ -178,6 +180,56 @@ public class PostsDao {
 		}
 		return posts;
 	}
+	
+	/**
+	 * Get the Posts record by fetching it from your MySQL instance. This runs a
+	 * SELECT statement and returns a single Posts instance.
+	 */
+	public List<Posts> getPostsFromProductId(String productId) throws SQLException {
+		List<Posts> posts = new ArrayList<Posts>();
+
+		String selectPost = "SELECT PostId,Created,Review,Rating,NumInteractions,Active,UpVotes,DownVotes,Shares,UserName,ProductId FROM Posts WHERE ProductId=?;";
+		Connection connection = null;
+		PreparedStatement selectStmt = null;
+		ResultSet results = null;
+		try {
+			connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(selectPost);
+			selectStmt.setString(1, productId);
+
+			results = selectStmt.executeQuery();
+			while (results.next()) {
+				int postId = results.getInt("PostId");
+				Date created = new Date(results.getTimestamp("Created").getTime());
+				String review = results.getString("Review");
+				double rating = results.getDouble("Rating");
+				int numInteractions = results.getInt("NumInteractions");
+				boolean active = results.getBoolean("Active");
+				int upVotes = results.getInt("UpVotes");
+				int downVotes = results.getInt("DownVotes");
+				int shares = results.getInt("Shares");
+				String userName = results.getString("UserName");
+				String resultsProductId = results.getString("ProductId");
+
+				posts.add(new Posts(postId, created, review, rating, numInteractions, active, upVotes, downVotes,
+						shares, userName, resultsProductId));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
+			if (selectStmt != null) {
+				selectStmt.close();
+			}
+			if (results != null) {
+				results.close();
+			}
+		}
+		return posts;
+	}
 
 	/**
 	 * Get the Posts record by fetching it from your MySQL instance. This runs a
@@ -226,6 +278,76 @@ public class PostsDao {
 			}
 		}
 		return posts;
+	}
+	
+	public Map<String, Integer> getMostPostedProducts() throws SQLException {
+		Map<String, Integer> mostPostedProducts = new HashMap<>();
+
+		String selectPost = "SELECT ProductId, COUNT(*) TimesPosted FROM Posts GROUP BY ProductId ORDER BY COUNT(*) DESC LIMIT 9;";
+		Connection connection = null;
+		PreparedStatement selectStmt = null;
+		ResultSet results = null;
+		try {
+			connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(selectPost);
+
+			results = selectStmt.executeQuery();
+			while (results.next()) {
+				String productId = results.getString("ProductId");
+				int timesPosted = results.getInt("TimesPosted");
+
+				mostPostedProducts.put(productId, timesPosted);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
+			if (selectStmt != null) {
+				selectStmt.close();
+			}
+			if (results != null) {
+				results.close();
+			}
+		}
+		return mostPostedProducts;
+	}
+	
+	public Map<String, Integer> getMostActiveUser() throws SQLException {
+		Map<String, Integer> userWithMostPosts = new HashMap<>();
+
+		String selectPost = "SELECT UserName, COUNT(*) AS TimesPosted FROM Posts GROUP BY UserName HAVING UserName IS NOT NULL ORDER BY COUNT(*) DESC LIMIT 9;";
+		Connection connection = null;
+		PreparedStatement selectStmt = null;
+		ResultSet results = null;
+		try {
+			connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(selectPost);
+
+			results = selectStmt.executeQuery();
+			while (results.next()) {
+				String productId = results.getString("UserName");
+				int timesPosted = results.getInt("TimesPosted");
+
+				userWithMostPosts.put(productId, timesPosted);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
+			if (selectStmt != null) {
+				selectStmt.close();
+			}
+			if (results != null) {
+				results.close();
+			}
+		}
+		return userWithMostPosts;
 	}
 
 	/**

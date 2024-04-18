@@ -99,6 +99,40 @@ public class AdministratorsDao extends PersonsDao {
 		}
 		return null;
 	}
+	
+	public boolean isAdmin(String userName) throws SQLException {
+		// To build an Administrator object, we need the Persons record, too.
+		String selectAdministrator = "SELECT * "
+				+ "FROM Administrators INNER JOIN Persons ON Administrators.UserName = Persons.UserName "
+				+ "WHERE Administrators.UserName=?;";
+		Connection connection = null;
+		PreparedStatement selectStmt = null;
+		ResultSet results = null;
+		try {
+			connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(selectAdministrator);
+			selectStmt.setString(1, userName);
+
+			results = selectStmt.executeQuery();
+			if (results.next()) {
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
+			if (selectStmt != null) {
+				selectStmt.close();
+			}
+			if (results != null) {
+				results.close();
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * Update the LastName of the Administrators instance. This runs a UPDATE
@@ -135,22 +169,22 @@ public class AdministratorsDao extends PersonsDao {
 	/**
 	 * Delete the Administrators instance. This runs a DELETE statement.
 	 */
-	public Administrators delete(Administrators administrator) throws SQLException {
+	public boolean delete(String username) throws SQLException {
 		String deleteAdministrator = "DELETE FROM Administrators WHERE UserName=?;";
 		Connection connection = null;
 		PreparedStatement deleteStmt = null;
 		try {
 			connection = connectionManager.getConnection();
 			deleteStmt = connection.prepareStatement(deleteAdministrator);
-			deleteStmt.setString(1, administrator.getUserName());
+			deleteStmt.setString(1, username);
 			deleteStmt.executeUpdate();
 
-			super.delete(administrator);
+			super.delete(username);
 
-			return null;
+			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw e;
+			return false;
 		} finally {
 			if (connection != null) {
 				connection.close();

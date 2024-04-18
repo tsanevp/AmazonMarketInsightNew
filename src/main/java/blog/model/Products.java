@@ -40,6 +40,14 @@ public class Products {
 		this.dislikes = dislikes;
 	}
 
+	public Products(String productId, double stars, double price, boolean bestSeller) {
+		this.productId = productId;
+		this.stars = stars;
+		this.price = price;
+		this.bestSeller = bestSeller;
+
+	}
+
 	// Getters and Setters
 	public String getProductId() {
 		return productId;

@@ -136,6 +136,41 @@ public class UserGroupsDao {
 		return userGroups;
 	}
 	
+	public List<UserGroups> getAllMyUserGroups(String userName) throws SQLException {
+		List<UserGroups> userGroups = new ArrayList<>();
+		String selectAllUserGroups = "SELECT * FROM UserGroups;";
+		Connection connection = null;
+		PreparedStatement selectStmt = null;
+		ResultSet results = null;
+		try {
+			connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(selectAllUserGroups);
+			results = selectStmt.executeQuery();
+			while (results.next()) {
+				int resultUserGroupId = results.getInt("GroupId");
+				String groupName = results.getString("GroupName");
+				Date created = new Date(results.getTimestamp("Created").getTime());
+				int categoryId = results.getInt("CategoryId");
+
+				userGroups.add(new UserGroups(resultUserGroupId, groupName, created, categoryId));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
+			if (selectStmt != null) {
+				selectStmt.close();
+			}
+			if (results != null) {
+				results.close();
+			}
+		}
+		return userGroups;
+	}
+	
 	public UserGroups updateName(UserGroups userGroup, String newName) throws SQLException {
 		String updateUserGroup = "UPDATE UserGroups SET GroupName=? WHERE GroupId=?;";
 		Connection connection = null;
