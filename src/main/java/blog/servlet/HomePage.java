@@ -211,7 +211,7 @@ public class HomePage extends HttpServlet {
 	        htmlBuilder.append("<p class=\"card-text\">Stars: ").append(stars).append("</p>");
 	        htmlBuilder.append("<p class=\"card-text\">Price: $").append(price).append("</p>");
 	        htmlBuilder.append("<p class=\"card-text\">Best Seller: ").append(bestSeller).append("</p>");
-	        htmlBuilder.append("<a href=\"all_posts?productId=" + productName + "\" class=\"btn btn-primary\">View Details</a>");
+	        htmlBuilder.append("<a href=\"filter_products?productId=" + productName + "\" class=\"btn btn-primary\">View Details</a>");
 	        htmlBuilder.append("</div></div></div>");
 
 	        // Check if it's the last item in the row

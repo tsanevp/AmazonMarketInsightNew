@@ -8,9 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ProductsDao {
 	protected ConnectionManager connectionManager;
@@ -296,6 +294,45 @@ public class ProductsDao {
 		return products;
 	}
 	
+	 // Method to retrieve products by title containing the specified string
+    public List<Products> getProductsByTitle(String searchString) throws SQLException {
+        List<Products> products = new ArrayList<>();
+        
+        String selectProducts = "SELECT * FROM products WHERE title LIKE ?";
+		Connection connection = null;
+		PreparedStatement selectStmt = null;
+		ResultSet results = null;
+        
+		try {
+			connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(selectProducts);
+			
+            // Set the search parameter with wildcard '%' to match any substring
+			selectStmt.setString(1, "%" + searchString + "%");
+            
+			results = selectStmt.executeQuery();
+            while (results.next()) {            
+                products.add(parseProduct(results));
+            }
+            
+        } catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
+			if (selectStmt != null) {
+				selectStmt.close();
+			}
+			if (results != null) {
+				results.close();
+			}
+		}
+        
+        return products;
+    }
+	
 	public List<Products> getBestProducts() throws SQLException {
 		List<Products> bestProducts = new ArrayList<>();
 
@@ -335,7 +372,7 @@ public class ProductsDao {
 
 
 	public List<Products> getFilteredAndOrderedProducts(String category, String minPrice, String maxPrice,
-			String rating, String minReviews, String maxReviews, String isBestSeller, String orderBy) throws SQLException {
+			String rating, String minReviews, String maxReviews, String isBestSeller, String productId, String orderBy) throws SQLException {
 		List<Products> productList = new ArrayList<>();
 		StringBuilder queryBuilder = new StringBuilder("SELECT * FROM Products WHERE 1=1");
 
@@ -376,6 +413,11 @@ public class ProductsDao {
 			}
 		}
 
+		// Add rating filter
+		if (ValidationUtil.isValidString(productId)) {
+			queryBuilder.append(" AND ProductId = ?");
+		}
+		
 		// Append ordering condition
 		if (orderBy != null && !orderBy.isEmpty()) {
 			if (orderBy.equals("asc")) {
@@ -411,6 +453,10 @@ public class ProductsDao {
 			}
 			if (ValidationUtil.isValidString(maxReviews)) {
 				selectStmt.setInt(parameterIndex++, Integer.parseInt(maxReviews));
+			}
+			
+			if (ValidationUtil.isValidString(productId)) {
+				selectStmt.setString(parameterIndex++, productId);
 			}
 
 			resultSet = selectStmt.executeQuery();

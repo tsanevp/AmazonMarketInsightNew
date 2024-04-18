@@ -38,9 +38,7 @@ public class AllProductsFiltered extends HttpServlet {
 		    if (username == null) {
 		        return;
 		    }
-
-	        System.out.println("inside get");
-
+		    
 		    // Map for storing messages
 		    Map<String, String> messages = new HashMap<>();
 		    req.setAttribute("messages", messages);
@@ -53,11 +51,12 @@ public class AllProductsFiltered extends HttpServlet {
 		    String maxReviews = req.getParameter("maxReviews");
 		    String isBestSeller = req.getParameter("bestSeller");
 		    String orderBy = req.getParameter("orderBy");
+		    String productId = req.getParameter("productId");
 		    
 		    if (!ValidationUtil.isValidString(category) && !ValidationUtil.isValidString(minPrice) &&
 		            !ValidationUtil.isValidString(maxPrice) && !ValidationUtil.isValidString(rating) &&
 		            !ValidationUtil.isValidString(minReviews) && !ValidationUtil.isValidString(maxReviews) &&
-		            !ValidationUtil.isValidString(isBestSeller) &&
+		            !ValidationUtil.isValidString(isBestSeller) && !ValidationUtil.isValidString(productId) &&
 		            (!ValidationUtil.isValidString(orderBy) || orderBy.equals("none"))) {
 		        resp.sendRedirect(req.getContextPath() + "/all_products");
 		        return;
@@ -66,15 +65,11 @@ public class AllProductsFiltered extends HttpServlet {
 		    // Fetch filtered products from the database
 		    List<Products> filteredProducts = new ArrayList<>();
 			try {
-				filteredProducts = productsDao.getFilteredAndOrderedProducts(category, minPrice, maxPrice, rating, minReviews, maxReviews, isBestSeller, orderBy);
+				filteredProducts = productsDao.getFilteredAndOrderedProducts(category, minPrice, maxPrice, rating, minReviews, maxReviews, isBestSeller, productId, orderBy);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
-	        System.out.println(true);
-	        System.out.println("SFSDFSDSHIT: " + filteredProducts.size());
-
 
 		    // Pagination logic
 		    int page = 1;
@@ -87,7 +82,6 @@ public class AllProductsFiltered extends HttpServlet {
 		    int totalFilteredProducts = filteredProducts.size();
 		    int totalPages = (int) Math.ceil((double) totalFilteredProducts / pageSize);
 
-	        System.out.println("totalpages: " + totalPages);
 
 		    // Calculate offset for pagination
 		    int offset = (page - 1) * pageSize;
@@ -145,13 +139,14 @@ public class AllProductsFiltered extends HttpServlet {
 	    String rating = req.getParameter("rating");
 	    String minReviews = req.getParameter("minReviews");
 	    String maxReviews = req.getParameter("maxReviews");
-	    String isBestSeller = req.getParameter("bestSeller");	    
+	    String isBestSeller = req.getParameter("bestSeller");
+	    String productId = req.getParameter("productId");
 	    String orderBy = req.getParameter("orderBy");
 
 	    // Fetch filtered products from the database
 	    List<Products> filteredProducts = new ArrayList<>();
 		try {
-			filteredProducts = productsDao.getFilteredAndOrderedProducts(category, minPrice, maxPrice, rating, minReviews, maxReviews, isBestSeller, orderBy);
+			filteredProducts = productsDao.getFilteredAndOrderedProducts(category, minPrice, maxPrice, rating, minReviews, maxReviews, isBestSeller, productId, orderBy);
 		} catch (SQLException e) {
 			e.printStackTrace();
 	        req.setAttribute("error", "There was an error retrieving the categories. Please try again.");
